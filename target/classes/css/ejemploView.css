@@ -1,0 +1,17 @@
+/* Estilos para la ventana principal */
+.root {
+    -fx-background-color: #F0F0F0;
+}
+
+/* Estilo para el botón */
+.button {
+    -fx-background-color: #4a90e2;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15;
+}
+
+.button:hover {
+    -fx-background-color: #3a7ccd;
+}
