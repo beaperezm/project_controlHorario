@@ -1,4 +1,4 @@
-package com.proyectodam.pickApp_api;
+package com.proyectodam.fichApp_api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -9,7 +9,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-class PickAppApiApplicationTests {
+class FichAppApiApplicationTests {
 
 	@Test
 	void contextLoads() {
