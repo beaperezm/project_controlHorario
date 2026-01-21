@@ -1,7 +1,7 @@
-package com.fichapp.core.model;
+package com.proyectodam.fichApp_api.model;
 
-import com.fichapp.core.model.enums.EstadoEmpleado;
-import com.fichapp.core.model.enums.TipoGenero;
+import com.proyectodam.fichApp_api.enums.EstadoEmpleado;
+import com.proyectodam.fichApp_api.enums.TipoGenero;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
