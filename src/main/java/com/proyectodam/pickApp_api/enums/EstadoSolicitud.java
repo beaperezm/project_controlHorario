@@ -1,4 +1,8 @@
 package com.proyectodam.pickApp_api.enums;
 
-public class EstadoSolicitud {
+public enum EstadoSolicitud {
+    PENDIENTE,
+    APROBADA,
+    DENEGADA,
+    CANCELADA
 }
