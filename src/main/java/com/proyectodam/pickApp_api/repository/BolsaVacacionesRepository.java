@@ -1,4 +1,7 @@
 package com.proyectodam.pickApp_api.repository;
 
-public class BolsaVacacionesRepository {
+import com.proyectodam.pickApp_api.model.BolsaVacaciones;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BolsaVacacionesRepository extends JpaRepository<BolsaVacaciones, Integer> {
 }
