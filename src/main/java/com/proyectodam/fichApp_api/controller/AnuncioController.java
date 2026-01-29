@@ -1,4 +1,4 @@
-package com.proyectodam.fichApp_api.controller;
+package com.proyectodam.pickApp_api.controller;
 
 public class AnuncioController {
 }
