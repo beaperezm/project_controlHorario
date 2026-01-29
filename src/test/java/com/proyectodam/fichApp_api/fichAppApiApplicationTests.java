@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-class PickAppApiApplicationTests {
+class fichAppApiApplicationTests {
 
 	@Test
 	void contextLoads() {
