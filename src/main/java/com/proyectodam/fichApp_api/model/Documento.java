@@ -51,7 +51,4 @@ public class Documento {
     @JoinColumn(name = "empleado_id", nullable = false)
     private Empleado empleado;
 
-
-
-
 }

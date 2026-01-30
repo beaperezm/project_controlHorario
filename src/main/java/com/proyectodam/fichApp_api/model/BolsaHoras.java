@@ -28,7 +28,4 @@ public class BolsaHoras {
     @JoinColumn(name = "id_empleado")
     private Empleado empleado;
 
-
-
-
 }

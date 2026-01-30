@@ -11,7 +11,7 @@
 	<groupId>com.proyectodam</groupId>
 	<artifactId>fichApp-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>pickApp-api</name>
+	<name>fichApp-api</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>

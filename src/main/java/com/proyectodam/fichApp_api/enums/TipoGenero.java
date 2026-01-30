@@ -4,4 +4,5 @@ public enum TipoGenero {
     HOMBRE,
     MUJER,
     OTRO
+
 }

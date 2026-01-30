@@ -4,4 +4,5 @@ public enum EstadoEmpleado {
     ACTIVO,
     BAJA_MEDICA,
     INACTIVO
+
 }
