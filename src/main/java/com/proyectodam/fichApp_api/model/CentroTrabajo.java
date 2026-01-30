@@ -1,5 +1,6 @@
 package com.proyectodam.fichApp_api.model;
 
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,6 @@ public class CentroTrabajo {
     private String nombre;
     private String direccion;
     private String codigoPostal;
-
 
 
 }

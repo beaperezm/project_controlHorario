@@ -5,4 +5,5 @@ public enum TipoEventoFichaje {
     SALIDA,
     PAUSA_INICIO,
     PAUSA_FIN
+
 }
