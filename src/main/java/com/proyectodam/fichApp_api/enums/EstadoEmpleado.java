@@ -1,4 +1,5 @@
 package com.proyectodam.fichApp_api.enums;
 
-public class EstadoEmpleado {
+public enum EstadoEmpleado {
+    ACTIVO, BAJA_MEDICA, EXCEDENCIA, INACTIVO
 }

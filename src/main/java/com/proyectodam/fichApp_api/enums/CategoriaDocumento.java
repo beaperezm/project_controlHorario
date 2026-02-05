@@ -1,4 +1,5 @@
 package com.proyectodam.fichApp_api.enums;
 
-public class CategoriaDocumento {
+public enum CategoriaDocumento {
+    NOMINA, CONTRATO, CERTIFICADO, PRL, OTRO
 }

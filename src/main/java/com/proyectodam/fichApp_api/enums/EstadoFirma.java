@@ -1,4 +1,5 @@
 package com.proyectodam.fichApp_api.enums;
 
-public class EstadoFirma {
+public enum EstadoFirma {
+    PENDIENTE, FIRMADO, RECHAZADO
 }
