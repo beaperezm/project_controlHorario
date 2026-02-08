@@ -1,5 +1,6 @@
 package com.proyectodam.fichApp_api.model;
 
+
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -48,4 +49,5 @@ public class BolsaVacaciones {
 
     public LocalDateTime getLastUpdated() { return lastUpdated; }
     public void setLastUpdated(LocalDateTime lastUpdated) { this.lastUpdated = lastUpdated; }
+
 }

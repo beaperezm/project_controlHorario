@@ -3,10 +3,12 @@ package com.proyectodam.fichApp_api.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+
 @Entity
 @Table(name = "centros_trabajo")
 @Data
 public class CentroTrabajo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idCentro;

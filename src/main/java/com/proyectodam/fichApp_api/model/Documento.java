@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Documento {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,11 +44,12 @@ public class Documento {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime fechaSubida;
-    
+
     private LocalDateTime fechaFirma;
 
     // RELACIONES
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "empleado_id", nullable = false)
     private Empleado empleado;
+
 }

@@ -11,4 +11,5 @@ public interface IVacacionesService {
     SolicitudAusencia aprobarSolicitud(Integer idSolicitud);
 
     SolicitudAusencia rechazarSolicitud(Integer idSolicitud, String comentario);
+
 }
