@@ -1,5 +1,6 @@
 package com.proyectodam.fichApp_api.model;
 
+
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -40,4 +41,5 @@ public class DiaFestivo {
 
     public Integer getAnio() { return anio; }
     public void setAnio(Integer anio) { this.anio = anio; }
+
 }

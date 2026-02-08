@@ -1,5 +1,6 @@
 package com.proyectodam.fichApp_api.model;
 
+
 import com.proyectodam.fichApp_api.enums.EstadoSolicitud;
 import jakarta.persistence.*;
 
@@ -86,4 +87,5 @@ public class SolicitudAusencia {
 
     public String getComentarioGestor() { return comentarioGestor; }
     public void setComentarioGestor(String comentarioGestor) { this.comentarioGestor = comentarioGestor; }
+
 }

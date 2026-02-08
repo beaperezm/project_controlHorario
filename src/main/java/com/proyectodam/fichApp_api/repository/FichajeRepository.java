@@ -1,4 +1,9 @@
 package com.proyectodam.fichApp_api.repository;
 
-public class FichajeRepository {
+import com.proyectodam.fichApp_api.model.Fichaje;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+
+public interface FichajeRepository extends JpaRepository<Fichaje, Integer> {
+
 }
