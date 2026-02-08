@@ -7,12 +7,11 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "documentos")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Documento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +47,7 @@ public class Documento {
 
     // RELACIONES
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "empleado_id", nullable = false)
+    @JoinColumn(name = "empleado_id" /* ,nullable = false*/)
     private Empleado empleado;
 
 }
