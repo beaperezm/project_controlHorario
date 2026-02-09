@@ -33,7 +33,7 @@ public class DocumentoServiceImpl implements IDocumentoService {
     private final EmpleadoRepository empleadoRepository;
     private final Path fileStorageLocation = Paths.get("uploads").toAbsolutePath().normalize();
 
-    @Override
+/*    @Override
     public DocumentoDTO subirDocumento(MultipartFile archivo, CategoriaDocumento categoria, UUID idEmpleado) {
         Empleado empleado = empleadoRepository.findById(idEmpleado)
                 .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
@@ -66,7 +66,7 @@ public class DocumentoServiceImpl implements IDocumentoService {
         } catch (IOException | NoSuchAlgorithmException ex) {
             throw new RuntimeException("Error al almacenar el archivo " + fileName, ex);
         }
-    }
+    }*/
 
     @Override
     public DocumentoDTO obtenerDetalles(Long id) {
@@ -75,12 +75,12 @@ public class DocumentoServiceImpl implements IDocumentoService {
         return mapToDTO(documento);
     }
 
-    @Override
+ /*   @Override
     public List<DocumentoDTO> listarPorEmpleado(UUID idEmpleado) {
         return documentoRepository.findByEmpleadoIdEmpleado(idEmpleado).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
-    }
+    }*/
 
     @Override
     public byte[] descargarContenido(Long id) {
@@ -94,19 +94,19 @@ public class DocumentoServiceImpl implements IDocumentoService {
         }
     }
 
-    @Override
+ /*   @Override
     public void firmarDocumento(Long id, UUID idEmpleado) {
         Documento documento = documentoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Documento no encontrado"));
 
-        if (!documento.getEmpleado().getIdEmpleado().equals(idEmpleado)) {
+     /*   if (!documento.getEmpleado().getIdEmpleado().equals(idEmpleado)) {
             throw new RuntimeException("No tiene permiso para firmar este documento");
         }
 
         documento.setEstadoFirma(EstadoFirma.FIRMADO);
         documento.setFechaFirma(LocalDateTime.now());
         documentoRepository.save(documento);
-    }
+    }*/
 
     @Override
     public void eliminarDocumento(Long id) {
