@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface DocumentoRepository extends JpaRepository<Documento, Long> {
-    List<Documento> findByEmpleadoIdEmpleado(UUID idEmpleado);
+  //  List<Documento> findByEmpleadoIdEmpleado(UUID idEmpleado);
     List<Documento> findByCategoria(CategoriaDocumento categoria);
 }

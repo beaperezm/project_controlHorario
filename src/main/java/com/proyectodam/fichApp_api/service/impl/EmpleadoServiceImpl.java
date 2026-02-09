@@ -63,4 +63,33 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
 
         return empleado;
     }
+
+    @Override
+    public Empleado actualizarEmpleadoEnAltaRapidaEmpleado(int id, AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
+        Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa()).orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
+        Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+        empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
+        empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
+        empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
+        empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
+        empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
+        empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
+        empleado.setEstado(EstadoEmpleado.ACTIVO);
+        empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
+        empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
+        empleado.setEmpresa(empresa);
+
+        return empleadoRepository.save(empleado);
+    }
+
+    @Override
+    public Empleado borrarEmpleadoEnAltaRapidaEmpleado(int id) {
+        Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+        empleadoRepository.delete(empleado);
+
+        return empleado;
+
+    }
 }

@@ -20,24 +20,24 @@ public class DocumentoController {
 
     private final IDocumentoService documentoService;
 
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+/*    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<DocumentoDTO> uploadDocumento(
             @RequestParam("archivo") MultipartFile archivo,
             @RequestParam("categoria") CategoriaDocumento categoria,
             @RequestParam("idEmpleado") UUID idEmpleado) {
         DocumentoDTO documento = documentoService.subirDocumento(archivo, categoria, idEmpleado);
         return ResponseEntity.ok(documento);
-    }
+    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity<DocumentoDTO> getDocumento(@PathVariable Long id) {
         return ResponseEntity.ok(documentoService.obtenerDetalles(id));
     }
 
-    @GetMapping("/empleado/{idEmpleado}")
+  /*  @GetMapping("/empleado/{idEmpleado}")
     public ResponseEntity<List<DocumentoDTO>> listarPorEmpleado(@PathVariable UUID idEmpleado) {
         return ResponseEntity.ok(documentoService.listarPorEmpleado(idEmpleado));
-    }
+    }*/
 
     @GetMapping("/{id}/download")
     public ResponseEntity<byte[]> downloadDocumento(@PathVariable Long id) {
@@ -50,11 +50,11 @@ public class DocumentoController {
                 .body(data);
     }
 
-    @PutMapping("/{id}/firmar")
+  /*  @PutMapping("/{id}/firmar")
     public ResponseEntity<Void> firmarDocumento(@PathVariable Long id, @RequestParam UUID idEmpleado) {
         documentoService.firmarDocumento(id, idEmpleado);
         return ResponseEntity.ok().build();
-    }
+    }*/
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarDocumento(@PathVariable Long id) {

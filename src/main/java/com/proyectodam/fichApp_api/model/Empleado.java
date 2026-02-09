@@ -18,15 +18,15 @@ import lombok.Setter;
 @Data
 public class Empleado {
 
-   @Id
+  /*  @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_empleado", updatable = false, nullable = false)
-    private UUID idEmpleado;
+    private UUID idEmpleado2;*/
 
-  /*  @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_empleado", updatable = false, nullable = false)
-    private int idEmpleado;*/
+    private int idEmpleado;
 
     @ManyToOne
     @JoinColumn(name = "id_empresa")
