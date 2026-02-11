@@ -17,4 +17,5 @@ public class DocumentoDTO {
     private CategoriaDocumento categoria;
     private LocalDateTime fechaSubida;
     private String urlDescarga;
+    private Integer idEmpleado;
 }
