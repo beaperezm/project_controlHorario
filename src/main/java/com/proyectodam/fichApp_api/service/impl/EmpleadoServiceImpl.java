@@ -5,6 +5,7 @@ import com.proyectodam.fichApp_api.enums.EstadoEmpleado;
 import com.proyectodam.fichApp_api.model.*;
 import com.proyectodam.fichApp_api.repository.*;
 import com.proyectodam.fichApp_api.service.IEmpleadoService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -84,9 +85,11 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
         return empleadoRepository.save(empleado);
     }
 
+    @Transactional
     @Override
     public Empleado borrarEmpleadoEnAltaRapidaEmpleado(int id) {
         Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+        contratoRepository.borrarEmpleadoPorId(id);
         empleadoRepository.delete(empleado);
 
         return empleado;
