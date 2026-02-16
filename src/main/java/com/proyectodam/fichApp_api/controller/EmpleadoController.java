@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/empleados")
 public class EmpleadoController {
@@ -31,6 +33,11 @@ public class EmpleadoController {
     public ResponseEntity<Void> borrarEmpleadoEnAltaRapidaEmpleado(@PathVariable int id) {
         iEmpleadoService.borrarEmpleadoEnAltaRapidaEmpleado(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/all")
+    public List<Empleado> getAllEmpleados() {
+        return iEmpleadoService.getAllEmpleados();
     }
 
 }

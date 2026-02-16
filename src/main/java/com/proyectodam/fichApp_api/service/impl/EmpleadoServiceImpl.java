@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EmpleadoServiceImpl implements IEmpleadoService {
@@ -67,32 +68,50 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
 
     @Override
     public Empleado actualizarEmpleadoEnAltaRapidaEmpleado(int id, AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
-        Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa()).orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+      //  Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa()).orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
 
         Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
-
-        empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
-        empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
-        empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
-        empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
-        empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
-        empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
+        if(altaRapidaEmpleadoDTO.getNombre() != null) {
+            empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
+        }
+        if(altaRapidaEmpleadoDTO.getApellidos() != null) {
+            empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
+        }
+        if(altaRapidaEmpleadoDTO.getEmail() != null) {
+            empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
+        }
+        if(altaRapidaEmpleadoDTO.getDireccion() != null) {
+            empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
+        }
+        if(altaRapidaEmpleadoDTO.getTelefono() != null) {
+            empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
+        }
+        if(altaRapidaEmpleadoDTO.getDni() != null) {
+            empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
+        }
+        if(altaRapidaEmpleadoDTO.getFechaAlta() != null) {
+            empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
+        }
+        if(altaRapidaEmpleadoDTO.getFechaNacimiento() != null) {
+            empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
+        }
         empleado.setEstado(EstadoEmpleado.ACTIVO);
-        empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
-        empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
-        empleado.setEmpresa(empresa);
-
         return empleadoRepository.save(empleado);
     }
 
     @Transactional
     @Override
-    public Empleado borrarEmpleadoEnAltaRapidaEmpleado(int id) {
+    public void borrarEmpleadoEnAltaRapidaEmpleado(int id) {
         Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
         contratoRepository.borrarEmpleadoPorId(id);
         empleadoRepository.delete(empleado);
 
-        return empleado;
-
     }
+
+    @Override
+    public List<Empleado> getAllEmpleados() {
+        return empleadoRepository.findAll();
+    }
+
+
 }
