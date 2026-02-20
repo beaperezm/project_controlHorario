@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -96,6 +97,7 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
             empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
         }
         empleado.setEstado(EstadoEmpleado.ACTIVO);
+        empleado.setUpdatedAt(LocalDateTime.now());
         return empleadoRepository.save(empleado);
     }
 
@@ -105,7 +107,6 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
         Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
         contratoRepository.borrarEmpleadoPorId(id);
         empleadoRepository.delete(empleado);
-
     }
 
     @Override
@@ -113,5 +114,19 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
         return empleadoRepository.findAll();
     }
 
+    @Transactional
+    @Override
+    public void borradoLogicoEmpleado(int id) {
+        Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
 
+        empleado.setEstado(EstadoEmpleado.INACTIVO);
+        empleado.setUpdatedAt(LocalDateTime.now());
+
+        empleadoRepository.save(empleado);
+
+    }
+
+    public List<Empleado> getAllEmpleadosWithoutInactive() {
+        return empleadoRepository.findByEstadoNot(EstadoEmpleado.INACTIVO);
+    }
 }

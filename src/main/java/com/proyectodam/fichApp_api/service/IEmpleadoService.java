@@ -12,4 +12,8 @@ public interface IEmpleadoService {
     void borrarEmpleadoEnAltaRapidaEmpleado(int id);
 
     List<Empleado> getAllEmpleados();
+
+    void borradoLogicoEmpleado(int id);
+
+    List<Empleado> getAllEmpleadosWithoutInactive();
 }
