@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+/**
+ * Entidad que representa la empresa cliente que utiliza el sistema.
+ */
 @Entity
 @Table(name = "empresas")
 @Data

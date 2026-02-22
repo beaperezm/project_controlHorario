@@ -1,4 +1,4 @@
-// Eliminar cuando se implemente la base de datos real
+// TODO: Eliminar esta clase una vez que la base de datos real esté operativa.
 
 package com.proyectodam.fichApp_api.config;
 
@@ -7,8 +7,10 @@ import com.proyectodam.fichApp_api.enums.MetodoFichaje;
 import com.proyectodam.fichApp_api.enums.TipoEventoFichaje;
 import com.proyectodam.fichApp_api.enums.TipoGenero;
 import com.proyectodam.fichApp_api.model.Empleado;
+import com.proyectodam.fichApp_api.model.Departamento;
 import com.proyectodam.fichApp_api.model.Empresa;
 import com.proyectodam.fichApp_api.model.Fichaje;
+import com.proyectodam.fichApp_api.model.Rol;
 import com.proyectodam.fichApp_api.repository.EmpleadoRepository;
 import com.proyectodam.fichApp_api.repository.EmpresaRepository;
 import com.proyectodam.fichApp_api.repository.FichajeRepository;
@@ -30,14 +32,15 @@ public class DataSeeder implements CommandLineRunner {
     private final EmpleadoRepository empleadoRepository;
     private final FichajeRepository fichajeRepository;
     private final com.proyectodam.fichApp_api.repository.DocumentoRepository documentoRepository;
+    private final com.proyectodam.fichApp_api.repository.RolRepository rolRepository;
+    private final com.proyectodam.fichApp_api.repository.DepartamentoRepository departamentoRepository;
+    private final com.proyectodam.fichApp_api.repository.HorarioRepository horarioRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        System.out.println("---- INICIANDO DATA SEEDER ----");
-
-        // 1. Crear Empresa por defecto
+        // 1. Verificar/crear empresa por defecto
         Empresa empresa = empresaRepository.findAll().stream().findFirst().orElse(null);
         if (empresa == null) {
             empresa = new Empresa();
@@ -47,35 +50,34 @@ public class DataSeeder implements CommandLineRunner {
             empresa.setEmailContacto("admin@fichapp.com");
             empresa.setTelefono("910000000");
             empresa = empresaRepository.save(empresa);
-            System.out.println("Empresa creada: " + empresa.getNombre());
-        } else {
-            System.out.println("Empresa ya existe: " + empresa.getNombre());
         }
 
-        // 2. Crear Usuarios (Admin y Empleado)
+        // 2. Crear horario, roles y departamentos por defecto
+        if (horarioRepository.count() == 0) {
+            crearHorarioPorDefecto(empresa);
+        }
+
+        crearRolesPorDefecto();
+        crearDepartamentosPorDefecto(empresa);
+
+        // 3. Crear usuarios y datos de prueba
         crearEmpleadoSiNoExiste(empresa, "admin@fichapp.com", "Admin", "User", "admin123", true);
         Empleado usuario = crearEmpleadoSiNoExiste(empresa, "user@fichapp.com", "Usuario", "Prueba", "user123", false);
+
         if (usuario != null) {
+            if (fichajeRepository.count() == 0) {
+                crearFichajesPrueba(usuario);
+            }
+            if (documentoRepository.count() == 0) {
+                crearDocumentosPrueba(usuario);
+            }
         }
-
-        // 3. Crear Fichajes de prueba para el usuario
-        if (fichajeRepository.count() == 0 && usuario != null) {
-            crearFichajesPrueba(usuario);
-        }
-
-        // 4. Crear Documentos de prueba
-        if (documentoRepository.count() == 0 && usuario != null) {
-            crearDocumentosPrueba(usuario);
-        }
-
-        System.out.println("---- DATA SEEDER FINALIZADO ----");
     }
 
     private Empleado crearEmpleadoSiNoExiste(Empresa empresa, String email, String nombre, String apellidos,
             String password, boolean isAdmin) {
         Optional<Empleado> empleadoOpt = empleadoRepository.findByEmail(email);
         if (empleadoOpt.isPresent()) {
-            System.out.println("Empleado ya existe: " + email);
             return empleadoOpt.get();
         }
 
@@ -92,14 +94,12 @@ public class DataSeeder implements CommandLineRunner {
         empleado.setEstado(EstadoEmpleado.ACTIVO);
         empleado.setFechaAltaSistema(LocalDate.now());
 
-        // TODO: Asignar ROL cuando el sistema de roles esté implementado
-        // Por ahora, asumimos que todos tienen acceso básico o discriminamos por lógica
-
+        // TODO: Asignar el rol real
         return empleadoRepository.save(empleado);
     }
 
     private void crearFichajesPrueba(Empleado empleado) {
-        // Ayer: Entrada 09:00, Salida 18:00
+        // Fichajes de ayer (09:00 a 18:00)
         LocalDateTime ayer = LocalDateTime.now().minusDays(1).withHour(9).withMinute(0).withSecond(0);
 
         Fichaje entrada = new Fichaje();
@@ -120,7 +120,7 @@ public class DataSeeder implements CommandLineRunner {
         salida.setEsValido(true);
         fichajeRepository.save(salida);
 
-        // Hoy: Entrada 08:55
+        // Fichaje de hoy (08:55)
         LocalDateTime hoy = LocalDateTime.now().withHour(8).withMinute(55).withSecond(0);
         Fichaje entradaHoy = new Fichaje();
         entradaHoy.setEmpleado(empleado);
@@ -130,8 +130,6 @@ public class DataSeeder implements CommandLineRunner {
         entradaHoy.setMetodoRegistro(MetodoFichaje.MANUAL);
         entradaHoy.setEsValido(true);
         fichajeRepository.save(entradaHoy);
-
-        System.out.println("Fichajes de prueba creados para: " + empleado.getEmail());
     }
 
     private void crearDocumentosPrueba(Empleado empleado) {
@@ -165,10 +163,61 @@ public class DataSeeder implements CommandLineRunner {
                     .build();
 
             documentoRepository.save(doc);
-            System.out.println("Documento de prueba creado para: " + empleado.getEmail());
-
         } catch (Exception e) {
-            System.err.println("Error al crear documento de prueba: " + e.getMessage());
+        }
+    }
+
+    private void crearRolesPorDefecto() {
+        String[] roles = { "ADMIN", "USER", "MANAGER", "RRHH" };
+        for (String rolNombre : roles) {
+            try {
+                boolean existe = rolRepository.findAll().stream()
+                        .anyMatch(r -> r.getNombre().equalsIgnoreCase(rolNombre));
+
+                if (!existe) {
+                    Rol rol = new Rol();
+                    rol.setNombre(rolNombre);
+                    rol.setPermisos("ALL");
+                    rolRepository.save(rol);
+                }
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private void crearDepartamentosPorDefecto(Empresa empresa) {
+        String[] deptos = { "Desarrollo", "Recursos Humanos", "Ventas", "Marketing", "Soporte" };
+        for (String deptoNombre : deptos) {
+            try {
+                boolean existe = departamentoRepository.findAll().stream()
+                        .anyMatch(d -> d.getNombre().equalsIgnoreCase(deptoNombre) &&
+                                d.getEmpresa().getIdEmpresa() == empresa.getIdEmpresa());
+
+                if (!existe) {
+                    Departamento depto = new Departamento();
+                    depto.setNombre(deptoNombre);
+                    depto.setDescripcion("Departamento de " + deptoNombre);
+                    depto.setEmpresa(empresa);
+                    depto.setEmpresa(empresa);
+                    departamentoRepository.save(depto);
+                }
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private void crearHorarioPorDefecto(Empresa empresa) {
+        try {
+            com.proyectodam.fichApp_api.model.Horario horario = new com.proyectodam.fichApp_api.model.Horario();
+            horario.setNombre("Horario General");
+            horario.setEmpresa(empresa);
+            horario.setMargenFlexibleMin(15);
+            // Configuración semanal
+            String configSemanal = "[{\"dia\":\"LUNES\",\"entrada\":\"09:00\",\"salida\":\"18:00\"},{\"dia\":\"MARTES\",\"entrada\":\"09:00\",\"salida\":\"18:00\"},{\"dia\":\"MIERCOLES\",\"entrada\":\"09:00\",\"salida\":\"18:00\"},{\"dia\":\"JUEVES\",\"entrada\":\"09:00\",\"salida\":\"18:00\"},{\"dia\":\"VIERNES\",\"entrada\":\"09:00\",\"salida\":\"15:00\"}]";
+            horario.setConfiguracionSemanal(configSemanal);
+
+            horarioRepository.save(horario);
+        } catch (Exception e) {
         }
     }
 

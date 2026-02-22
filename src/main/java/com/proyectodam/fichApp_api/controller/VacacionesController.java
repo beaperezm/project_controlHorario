@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/vacaciones")
+@RequestMapping("/api/vacaciones")
 public class VacacionesController {
 
     private final IVacacionesService vacacionesService;
@@ -23,8 +23,7 @@ public class VacacionesController {
             @PathVariable Integer idEmpleado) {
 
         return ResponseEntity.ok(
-                vacacionesService.obtenerSolicitudesPorEmpleado(idEmpleado)
-        );
+                vacacionesService.obtenerSolicitudesPorEmpleado(idEmpleado));
     }
 
     @PutMapping("/{id}/aprobar")
@@ -32,8 +31,7 @@ public class VacacionesController {
             @PathVariable Integer id) {
 
         return ResponseEntity.ok(
-                vacacionesService.aprobarSolicitud(id)
-        );
+                vacacionesService.aprobarSolicitud(id));
     }
 
     @PutMapping("/{id}/rechazar")
@@ -42,8 +40,6 @@ public class VacacionesController {
             @RequestParam String comentario) {
 
         return ResponseEntity.ok(
-                vacacionesService.rechazarSolicitud(id, comentario)
-        );
+                vacacionesService.rechazarSolicitud(id, comentario));
     }
 }
-

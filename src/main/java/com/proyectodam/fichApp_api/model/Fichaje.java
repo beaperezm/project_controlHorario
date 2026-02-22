@@ -17,7 +17,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-
 @Getter
 @Setter
 @Entity
@@ -29,10 +28,10 @@ public class Fichaje {
     @Column(name = "id_fichaje")
     private int idFichaje;
 
-    @Column(name= "timestamp_dispositivo")
+    @Column(name = "timestamp_dispositivo")
     private LocalDateTime timestampDispositivo;
 
-    @Column(name= "timestamp_servidor")
+    @Column(name = "timestamp_servidor")
     private LocalDateTime timestampServidor;
 
     @Enumerated(EnumType.STRING)

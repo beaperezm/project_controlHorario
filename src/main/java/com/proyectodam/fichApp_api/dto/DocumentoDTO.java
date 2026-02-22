@@ -5,6 +5,10 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO que representa la información de un documento para enviar al cliente.
+ * Oculta detalles internos de almacenamiento y expone URLs de descarga.
+ */
 @Data
 @Builder
 @NoArgsConstructor

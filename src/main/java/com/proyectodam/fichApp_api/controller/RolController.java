@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/api/roles")
 public class RolController {
 
     @Autowired
     private IRolService iRolService;
 
+    /**
+     * Devuelve la lista completa de roles definidos en el sistema.
+     */
     @GetMapping("/all")
     public List<Rol> getAllRoles() {
         return iRolService.getAllRoles();

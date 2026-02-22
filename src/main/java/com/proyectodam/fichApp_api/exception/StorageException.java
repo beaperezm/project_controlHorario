@@ -1,5 +1,8 @@
 package com.proyectodam.fichApp_api.exception;
 
+/**
+ * Excepción base para errores relacionados con el almacenamiento de archivos.
+ */
 public class StorageException extends RuntimeException {
 
     public StorageException(String message) {

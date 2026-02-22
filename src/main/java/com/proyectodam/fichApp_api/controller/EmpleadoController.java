@@ -9,24 +9,35 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/empleados")
+@RequestMapping("/api/empleados")
 public class EmpleadoController {
 
     @Autowired
     private IEmpleadoService iEmpleadoService;
 
+    /**
+     * Crea un nuevo empleado de forma rápida con la información básica.
+     */
     @PostMapping("/alta-rapida")
     public ResponseEntity<Empleado> altaRapidaEmpleado(@RequestBody AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
         Empleado empleado = iEmpleadoService.altaRapidaEmpleado(altaRapidaEmpleadoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(empleado);
     }
 
+    /**
+     * Actualiza la información de un empleado existente mediante el proceso de alta
+     * rápida.
+     */
     @PutMapping("/empleado/{id}")
-    public ResponseEntity<Empleado> actualizarEmpleadoEnAltaRapidaEmpleado(@PathVariable int id, @RequestBody AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
+    public ResponseEntity<Empleado> actualizarEmpleadoEnAltaRapidaEmpleado(@PathVariable int id,
+            @RequestBody AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
         Empleado empleado = iEmpleadoService.actualizarEmpleadoEnAltaRapidaEmpleado(id, altaRapidaEmpleadoDTO);
         return ResponseEntity.ok(empleado);
     }
 
+    /**
+     * Elimina un empleado del sistema.
+     */
     @DeleteMapping("/empleado/{id}")
     public ResponseEntity<Void> borrarEmpleadoEnAltaRapidaEmpleado(@PathVariable int id) {
         iEmpleadoService.borrarEmpleadoEnAltaRapidaEmpleado(id);

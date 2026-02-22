@@ -13,83 +13,110 @@ import java.time.LocalDateTime;
 @Service
 public class EmpleadoServiceImpl implements IEmpleadoService {
 
-    @Autowired
-    private EmpleadoRepository empleadoRepository;
+        @Autowired
+        private EmpleadoRepository empleadoRepository;
 
-    @Autowired
-    private EmpresaRepository empresaRepository;
+        @Autowired
+        private EmpresaRepository empresaRepository;
 
-    @Autowired
-    private DepartamentoRepository departamentoRepository;
+        @Autowired
+        private DepartamentoRepository departamentoRepository;
 
-    @Autowired
-    private RolRepository rolRepository;
+        @Autowired
+        private RolRepository rolRepository;
 
-    @Autowired
-    private ContratoRepository contratoRepository;
+        @Autowired
+        private ContratoRepository contratoRepository;
 
-    @Override
-    public Empleado altaRapidaEmpleado(AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
+        @Autowired
+        private HorarioRepository horarioRepository;
 
-        Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa()).orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+        @Override
+        public Empleado altaRapidaEmpleado(AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
 
-        Departamento departamento = departamentoRepository.findById(altaRapidaEmpleadoDTO.getIdDepartamento()).orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+                Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa())
+                                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
 
-        Rol rol = rolRepository.findById(altaRapidaEmpleadoDTO.getIdRol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                Departamento departamento = departamentoRepository.findById(altaRapidaEmpleadoDTO.getIdDepartamento())
+                                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
 
+                Rol rol = rolRepository.findById(altaRapidaEmpleadoDTO.getIdRol())
+                                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
-        //Se crea el empleado
-        Empleado empleado = new Empleado();
-        empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
-        empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
-        empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
-        empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
-        empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
-        empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
-        empleado.setEstado(EstadoEmpleado.ACTIVO);
-        empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
-        empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
-        empleado.setEmpresa(empresa);
-        empleadoRepository.save(empleado);
+                // Se crea el empleado
+                Empleado empleado = new Empleado();
+                empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
+                empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
+                empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
+                empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
+                empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
+                empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
+                empleado.setEstado(EstadoEmpleado.ACTIVO);
+                empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
+                empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
+                empleado.setEmpresa(empresa);
+                empleadoRepository.save(empleado);
 
-        //Se crea el contrato
-        Contrato contrato = new Contrato();
-        contrato.setEmpleado(empleado);
-        contrato.setDepartamento(departamento);
-        contrato.setRol(rol);
-        contrato.setFechaInicio(altaRapidaEmpleadoDTO.getFechaAlta());
-        contrato.setCreatedAt(LocalDateTime.now());
-        contratoRepository.save(contrato);
+                // Se crea el contrato
+                Contrato contrato = new Contrato();
+                contrato.setEmpleado(empleado);
+                contrato.setDepartamento(departamento);
+                contrato.setRol(rol);
+                contrato.setFechaInicio(altaRapidaEmpleadoDTO.getFechaAlta());
+                contrato.setCreatedAt(LocalDateTime.now());
 
-        return empleado;
-    }
+                // Asignar Horario por defecto (el primero que encuentre de la empresa o
+                // general)
+                // Idealmente, se pasaría el ID del horario en el DTO, pero para alta rápida
+                // usamos uno por defecto
+                Horario horarioDefecto = horarioRepository.findAll().stream()
+                                .filter(h -> h.getEmpresa().getIdEmpresa() == empresa.getIdEmpresa())
+                                .findFirst()
+                                .orElse(null);
 
-    @Override
-    public Empleado actualizarEmpleadoEnAltaRapidaEmpleado(int id, AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
-        Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa()).orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+                if (horarioDefecto != null) {
+                        contrato.setHorario(horarioDefecto);
+                } else {
+                        // Manejo de error o log si no hay horario
+                        System.out
+                                        .println("ADVERTENCIA: No se encontró horario por defecto para la empresa "
+                                                        + empresa.getNombre());
+                }
 
-        Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+                contratoRepository.save(contrato);
 
-        empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
-        empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
-        empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
-        empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
-        empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
-        empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
-        empleado.setEstado(EstadoEmpleado.ACTIVO);
-        empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
-        empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
-        empleado.setEmpresa(empresa);
+                return empleado;
+        }
 
-        return empleadoRepository.save(empleado);
-    }
+        @Override
+        public Empleado actualizarEmpleadoEnAltaRapidaEmpleado(int id, AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
+                Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa())
+                                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
 
-    @Override
-    public Empleado borrarEmpleadoEnAltaRapidaEmpleado(int id) {
-        Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
-        empleadoRepository.delete(empleado);
+                Empleado empleado = empleadoRepository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
 
-        return empleado;
+                empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
+                empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
+                empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
+                empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
+                empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
+                empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
+                empleado.setEstado(EstadoEmpleado.ACTIVO);
+                empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
+                empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
+                empleado.setEmpresa(empresa);
 
-    }
+                return empleadoRepository.save(empleado);
+        }
+
+        @Override
+        public Empleado borrarEmpleadoEnAltaRapidaEmpleado(int id) {
+                Empleado empleado = empleadoRepository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+                empleadoRepository.delete(empleado);
+
+                return empleado;
+
+        }
 }
