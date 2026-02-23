@@ -27,7 +27,7 @@ public class Documento {
     private String nombreArchivo; 
 
     @Column(nullable = false)
-    private String rutaAcceso; // Local: C:/... | Cloud: URL Supabase
+    private String rutaAcceso; // Local: C:/| Cloud: URL Supabase
 
     @Column(nullable = false)
     private String tipoMime; // Tipo de archivo: application/pdf, image/png, etc.

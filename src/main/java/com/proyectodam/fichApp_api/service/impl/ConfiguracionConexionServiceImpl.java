@@ -28,8 +28,7 @@ public class ConfiguracionConexionServiceImpl implements IConfiguracionConexionS
     @Override
     @Transactional
     public void inicializarConfiguracion() {
-        // Si no existe configuración, creamos una por defecto basada en el perfil
-        // activo
+        // Si no existe configuración, creamos una por defecto basada en el perfil activo
         repository.obtenerConfiguracion()
                 .orElseGet(() -> {
                     ConfiguracionConexion nueva = new ConfiguracionConexion();
@@ -41,8 +40,7 @@ public class ConfiguracionConexionServiceImpl implements IConfiguracionConexionS
 
     @Override
     public ConfiguracionConexion obtenerConfiguracion() {
-        // Recuperamos la configuración o creamos una por defecto si fallase la
-        // inicialización
+        // Recuperamos la configuración o creamos una por defecto si fallase la inicialización
         return repository.obtenerConfiguracion()
                 .orElseGet(() -> {
                     ConfiguracionConexion nueva = new ConfiguracionConexion();

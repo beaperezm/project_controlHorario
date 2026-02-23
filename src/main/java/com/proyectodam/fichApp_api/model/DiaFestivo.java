@@ -13,7 +13,6 @@ public class DiaFestivo {
     @Column(name = "id_festivo")
     private Integer idFestivo;
 
-    // Si ya tienes CentroTrabajo Entity, cámbialo a ManyToOne
     @Column(name = "id_centro")
     private Integer idCentro;
 
