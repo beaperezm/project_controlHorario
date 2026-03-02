@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BolsaVacacionesRepository extends JpaRepository<BolsaVacaciones, Integer> {
 
+    BolsaVacaciones findByEmpleado_IdEmpleadoAndAnio(int id, int anioActual);
+
 }
