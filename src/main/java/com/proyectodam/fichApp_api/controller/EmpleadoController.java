@@ -2,6 +2,9 @@ package com.proyectodam.fichApp_api.controller;
 
 import com.proyectodam.fichApp_api.dto.AltaRapidaEmpleadoDTO;
 import com.proyectodam.fichApp_api.dto.EmpleadoDTO;
+import com.proyectodam.fichApp_api.dto.EmpleadoEstadoContadorDTO;
+import com.proyectodam.fichApp_api.dto.EmpleadoDetalleDTO;
+import com.proyectodam.fichApp_api.enums.EstadoEmpleado;
 import com.proyectodam.fichApp_api.model.Contrato;
 import com.proyectodam.fichApp_api.model.Empleado;
 import com.proyectodam.fichApp_api.repository.ContratoRepository;
@@ -35,8 +38,9 @@ public class EmpleadoController {
     }
 
     @PutMapping("/empleado/{id}")
-    public ResponseEntity<Empleado> actualizarEmpleadoEnAltaRapidaEmpleado(@PathVariable int id, @RequestBody AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
-        Empleado empleado = iEmpleadoService.actualizarEmpleadoEnAltaRapidaEmpleado(id, altaRapidaEmpleadoDTO);
+    public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable int id, @RequestBody AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
+        Empleado empleado = iEmpleadoService.actualizarEmpleado(id, altaRapidaEmpleadoDTO);
+        System.out.println("ESTADO EMPLEADO: " + empleado.getEstado());
         return ResponseEntity.ok(empleado);
     }
 
@@ -86,6 +90,18 @@ public class EmpleadoController {
         }
 
             return empleadoDTOList;
+    }
+
+    @GetMapping("/detalle/{id}")
+    public ResponseEntity<EmpleadoDetalleDTO> getEmpleadoDetalle(@PathVariable int id) {
+        return ResponseEntity.ok(iEmpleadoService.getEmpleadoDetalle(id));
+    }
+
+
+    @GetMapping("/total_segun_estado")
+    public ResponseEntity<EmpleadoEstadoContadorDTO> getTotalEmpleadosEstado() {
+        EmpleadoEstadoContadorDTO empleadoEstadoContadorDTO = iEmpleadoService.countEstadoEmpleados();
+        return ResponseEntity.ok(empleadoEstadoContadorDTO);
     }
 
 }
