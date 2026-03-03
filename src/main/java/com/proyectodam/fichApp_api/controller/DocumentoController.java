@@ -1,7 +1,6 @@
 package com.proyectodam.fichApp_api.controller;
 
 import com.proyectodam.fichApp_api.dto.DocumentoDTO;
-import com.proyectodam.fichApp_api.enums.CategoriaDocumento;
 import com.proyectodam.fichApp_api.service.IDocumentoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -29,10 +28,11 @@ public class DocumentoController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<DocumentoDTO> subirDocumento(
             @RequestParam("archivo") MultipartFile archivo,
-            @RequestParam("categoria") CategoriaDocumento categoria,
+            @RequestParam(value = "nombreCustom", required = false) String nombreCustom,
+            @RequestParam("categoria") String categoria,
             @RequestParam("idEmpleado") Integer idEmpleado) {
 
-        DocumentoDTO nuevoDocumento = documentoService.subirDocumento(archivo, categoria, idEmpleado);
+        DocumentoDTO nuevoDocumento = documentoService.subirDocumento(archivo, nombreCustom, categoria, idEmpleado);
         return ResponseEntity.ok(nuevoDocumento);
     }
 
@@ -42,6 +42,15 @@ public class DocumentoController {
     @GetMapping("/{id}")
     public ResponseEntity<DocumentoDTO> obtenerDetalles(@PathVariable Long id) {
         return ResponseEntity.ok(documentoService.obtenerDetalles(id));
+    }
+
+    /**
+     * Lista todos los documentos de la plataforma (acceso sugerido a
+     * administrador).
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<DocumentoDTO>> listarTodos() {
+        return ResponseEntity.ok(documentoService.listarTodos());
     }
 
     /**

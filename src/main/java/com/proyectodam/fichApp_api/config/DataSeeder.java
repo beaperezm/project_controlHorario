@@ -156,7 +156,7 @@ public class DataSeeder implements CommandLineRunner {
                     .rutaAcceso(targetLocation.toString())
                     .tipoMime("text/plain")
                     .tamanoBytes(contenido.length())
-                    .categoria(com.proyectodam.fichApp_api.enums.CategoriaDocumento.NOMINA)
+                    .categoria("NÓMINA")
                     .estadoFirma(com.proyectodam.fichApp_api.enums.EstadoFirma.PENDIENTE)
                     .hashDocumento(hash)
                     .empleado(empleado)

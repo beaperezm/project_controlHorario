@@ -1,6 +1,5 @@
 package com.proyectodam.fichApp_api.dto;
 
-import com.proyectodam.fichApp_api.enums.CategoriaDocumento;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,8 +17,10 @@ public class DocumentoDTO {
     private String nombreArchivo;
     private String tipoMime;
     private long tamanoBytes;
-    private CategoriaDocumento categoria;
+    private String categoria;
     private LocalDateTime fechaSubida;
     private String urlDescarga;
     private Integer idEmpleado;
+    private String nombreEmpleado;
+    private String departamento;
 }

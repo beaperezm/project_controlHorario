@@ -1,6 +1,5 @@
 package com.proyectodam.fichApp_api.repository;
 
-import com.proyectodam.fichApp_api.enums.CategoriaDocumento;
 import com.proyectodam.fichApp_api.model.Documento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,7 +15,12 @@ public interface DocumentoRepository extends JpaRepository<Documento, Long> {
   List<Documento> findByEmpleadoIdEmpleado(Integer idEmpleado);
 
   /**
-   * Filtra documentos por su categoría.
+   * Busca documentos por categoría.
    */
-  List<Documento> findByCategoria(CategoriaDocumento categoria);
+  List<Documento> findByCategoria(String categoria);
+
+  /**
+   * Verifica si un documento ya existe dado su Hash SHA-256.
+   */
+  boolean existsByHashDocumento(String hashDocumento);
 }

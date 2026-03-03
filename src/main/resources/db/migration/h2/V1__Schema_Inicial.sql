@@ -167,7 +167,7 @@ CREATE TABLE "documentos" (
   "tipo_mime" varchar(255) NOT NULL,
   "tamano_bytes" bigint,
   "hash_documento" varchar(255) UNIQUE,
-  "categoria" varchar(20), /* Enum 'NOMINA', 'CONTRATO' ... */
+  "categoria" varchar(100) NOT NULL, /* Era Enum 'NOMINA', 'CONTRATO' ... */
   "estado_firma" varchar(20), /* Enum 'PENDIENTE', 'FIRMADO' ... */
   "fecha_subida" timestamp,
   "fecha_firma" timestamp

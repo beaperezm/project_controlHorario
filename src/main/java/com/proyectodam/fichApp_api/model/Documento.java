@@ -1,6 +1,5 @@
 package com.proyectodam.fichApp_api.model;
 
-import com.proyectodam.fichApp_api.enums.CategoriaDocumento;
 import com.proyectodam.fichApp_api.enums.EstadoFirma;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,7 +23,7 @@ public class Documento {
     private Long id;
 
     @Column(nullable = false)
-    private String nombreArchivo; 
+    private String nombreArchivo;
 
     @Column(nullable = false)
     private String rutaAcceso; // Local: C:/| Cloud: URL Supabase
@@ -37,9 +36,8 @@ public class Documento {
     @Column(unique = true)
     private String hashDocumento; // Hash SHA-256 para asegurar la integridad del documento
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private CategoriaDocumento categoria;
+    @Column(nullable = false, length = 100)
+    private String categoria;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

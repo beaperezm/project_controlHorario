@@ -1,9 +1,7 @@
 package com.proyectodam.fichApp_api.service;
 
 import com.proyectodam.fichApp_api.dto.DocumentoDTO;
-import com.proyectodam.fichApp_api.enums.CategoriaDocumento;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.List;
 import java.util.List;
 
 /**
@@ -11,17 +9,17 @@ import java.util.List;
  */
 public interface IDocumentoService {
     /**
-     * Sube un archivo al servidor y lo asocia a un empleado.
-     * 
-     * @param archivo    El archivo físico a subir.
-     * @param categoria  Categoría del documento (Nómina, Contrato, etc.).
-     * @param idEmpleado ID del empleado propietario del documento.
-     * @return DTO con la información del documento creado.
+     * Sube un nuevo documento y genera su Hash SHA-256.
      */
-    DocumentoDTO subirDocumento(MultipartFile archivo, CategoriaDocumento categoria, Integer idEmpleado);
+    DocumentoDTO subirDocumento(MultipartFile archivo, String nombreCustom, String categoria, Integer idEmpleado);
 
     /**
-     * Obtiene los detalles de un documento.
+     * Devuelve la lista de todos los documentos en el sistema.
+     */
+    List<DocumentoDTO> listarTodos();
+
+    /**
+     * Devuelve los detalles de un documento específico.
      */
     DocumentoDTO obtenerDetalles(Long id);
 

@@ -26,14 +26,6 @@ CREATE TYPE "estado_solicitud" AS ENUM (
   'CANCELADA'
 );
 
-CREATE TYPE "categoria_documento" AS ENUM (
-  'NOMINA',
-  'CONTRATO',
-  'CERTIFICADO',
-  'PRL',
-  'OTRO'
-);
-
 CREATE TYPE "estado_empleado" AS ENUM (
   'ACTIVO',
   'BAJA_MEDICA',
@@ -222,7 +214,7 @@ CREATE TABLE "documentos" (
   "tipo_mime" varchar(255) NOT NULL,
   "tamano_bytes" bigint,
   "hash_documento" varchar(255) UNIQUE,
-  "categoria" categoria_documento NOT NULL,
+  "categoria" varchar(100) NOT NULL,
   "estado_firma" estado_firma NOT NULL,
   "fecha_subida" timestamp,
   "fecha_firma" timestamp

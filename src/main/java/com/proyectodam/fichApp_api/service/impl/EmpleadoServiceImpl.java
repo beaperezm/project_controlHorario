@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import com.proyectodam.fichApp_api.dto.EmpleadoDTO;
 
 @Service
 public class EmpleadoServiceImpl implements IEmpleadoService {
@@ -118,5 +121,23 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
 
                 return empleado;
 
+        }
+
+        @Override
+        public List<EmpleadoDTO> listarTodos() {
+                return empleadoRepository.findAll().stream().map(empleado -> {
+                        EmpleadoDTO dto = new EmpleadoDTO();
+                        dto.setIdEmpleado(empleado.getIdEmpleado());
+                        dto.setNombre(empleado.getNombre());
+                        dto.setApellidos(empleado.getApellidos());
+                        dto.setEmail(empleado.getEmail());
+                        dto.setDireccion(empleado.getDireccion());
+                        dto.setTelefono(empleado.getTelefono());
+                        dto.setDni(empleado.getDniNie());
+                        dto.setEstado(empleado.getEstado() != null ? empleado.getEstado().name() : null);
+                        dto.setFechaAltaSistema(empleado.getFechaAltaSistema());
+                        dto.setFechaNacimiento(empleado.getFechaNacimiento());
+                        return dto;
+                }).collect(Collectors.toList());
         }
 }

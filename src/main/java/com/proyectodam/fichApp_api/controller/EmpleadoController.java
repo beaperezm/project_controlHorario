@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import com.proyectodam.fichApp_api.dto.EmpleadoDTO;
 
 @RestController
 @RequestMapping("/api/empleados")
@@ -42,6 +44,14 @@ public class EmpleadoController {
     public ResponseEntity<Void> borrarEmpleadoEnAltaRapidaEmpleado(@PathVariable int id) {
         iEmpleadoService.borrarEmpleadoEnAltaRapidaEmpleado(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Obtiene todos los empleados para autocompletados e interfaz.
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<EmpleadoDTO>> listarTodos() {
+        return ResponseEntity.ok(iEmpleadoService.listarTodos());
     }
 
 }
