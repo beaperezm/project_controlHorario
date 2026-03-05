@@ -13,6 +13,7 @@ public class RolServiceImpl implements IRolService {
 
     @Autowired
     private RolRepository rolRepository;
+
     @Override
     public List<Rol> getAllRoles() {
         return rolRepository.findAll();

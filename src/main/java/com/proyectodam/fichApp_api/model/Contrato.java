@@ -35,19 +35,22 @@ public class Contrato {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "id_empleado") //un empleado puede tener muchos contratos (renovaciones, etc) - un contrato pertenece a un solo empleado
+    @JoinColumn(name = "id_empleado") // un empleado puede tener muchos contratos (renovaciones, etc) - un contrato
+                                      // pertenece a un solo empleado
     private Empleado empleado;
 
-    @ManyToOne //Un rol puede estar en muchos contratos - cada contrato tiene un rol
+    @ManyToOne // Un rol puede estar en muchos contratos - cada contrato tiene un rol
     @JoinColumn(name = "id_rol")
     private Rol rol;
 
     @ManyToOne
-    @JoinColumn(name = "id_departamento") //Un departamento tiene muchos contratos - el empleado puede cambiar de departamento con otro contrato
+    @JoinColumn(name = "id_departamento") // Un departamento tiene muchos contratos - el empleado puede cambiar de
+                                          // departamento con otro contrato
     private Departamento departamento;
 
     @ManyToOne
-    @JoinColumn(name = "id_horario") //un horario puede asignarse a muchos contratos - un contrato define qué horario se aplica
+    @JoinColumn(name = "id_horario") // un horario puede asignarse a muchos contratos - un contrato define qué
+                                     // horario se aplica
     private Horario horario;
 
 }
