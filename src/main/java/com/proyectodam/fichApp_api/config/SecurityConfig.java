@@ -32,7 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
-                        // ⚠️ ACCESO TEMPORAL PARA DESARROLLO
+                        //  ACCESO TEMPORAL PARA DESARROLLO
                         .anyRequest().permitAll());
 
         return http.build();

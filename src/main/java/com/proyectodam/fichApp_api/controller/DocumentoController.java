@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/documentos")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // TODO: Ajustar según los requisitos de seguridad del entorno de producción
+@CrossOrigin(origins = "*") // Revisar
 public class DocumentoController {
 
     private final IDocumentoService documentoService;

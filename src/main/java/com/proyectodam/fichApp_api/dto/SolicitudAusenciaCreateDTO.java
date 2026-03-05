@@ -9,7 +9,7 @@ public class SolicitudAusenciaCreateDTO {
     private LocalDate fechaFin;
     private String tipo; // VACACIONES, ASUNTOS_PROPIOS, etc.
 
-    // getters y setters
+    // Métodos getter y setter
     public Integer getIdEmpleado() {
         return idEmpleado;
     }

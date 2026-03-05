@@ -1,6 +1,5 @@
 package com.proyectodam.fichApp_api.model;
 
-
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -32,22 +31,52 @@ public class BolsaVacaciones {
 
     // ===== GETTERS/SETTERS =====
 
-    public Integer getIdBolsaVac() { return idBolsaVac; }
-    public void setIdBolsaVac(Integer idBolsaVac) { this.idBolsaVac = idBolsaVac; }
+    public Integer getIdBolsaVac() {
+        return idBolsaVac;
+    }
 
-    public Empleado getEmpleado() { return empleado; }
-    public void setEmpleado(Empleado empleado) { this.empleado = empleado; }
+    public void setIdBolsaVac(Integer idBolsaVac) {
+        this.idBolsaVac = idBolsaVac;
+    }
 
-    public Integer getAnio() { return anio; }
-    public void setAnio(Integer anio) { this.anio = anio; }
+    public Empleado getEmpleado() {
+        return empleado;
+    }
 
-    public Integer getDiasTotalesAsignados() { return diasTotalesAsignados; }
-    public void setDiasTotalesAsignados(Integer diasTotalesAsignados) { this.diasTotalesAsignados = diasTotalesAsignados; }
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
+    }
 
-    public Integer getDiasPendientesAnioAnterior() { return diasPendientesAnioAnterior; }
-    public void setDiasPendientesAnioAnterior(Integer diasPendientesAnioAnterior) { this.diasPendientesAnioAnterior = diasPendientesAnioAnterior; }
+    public Integer getAnio() {
+        return anio;
+    }
 
-    public LocalDateTime getLastUpdated() { return lastUpdated; }
-    public void setLastUpdated(LocalDateTime lastUpdated) { this.lastUpdated = lastUpdated; }
+    public void setAnio(Integer anio) {
+        this.anio = anio;
+    }
+
+    public Integer getDiasTotalesAsignados() {
+        return diasTotalesAsignados;
+    }
+
+    public void setDiasTotalesAsignados(Integer diasTotalesAsignados) {
+        this.diasTotalesAsignados = diasTotalesAsignados;
+    }
+
+    public Integer getDiasPendientesAnioAnterior() {
+        return diasPendientesAnioAnterior;
+    }
+
+    public void setDiasPendientesAnioAnterior(Integer diasPendientesAnioAnterior) {
+        this.diasPendientesAnioAnterior = diasPendientesAnioAnterior;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 
 }
