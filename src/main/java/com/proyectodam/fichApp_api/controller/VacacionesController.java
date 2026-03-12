@@ -1,11 +1,13 @@
 package com.proyectodam.fichApp_api.controller;
 
+import com.proyectodam.fichApp_api.dto.SolicitudAusenciaCreateDTO;
 import com.proyectodam.fichApp_api.model.SolicitudAusencia;
 import com.proyectodam.fichApp_api.service.IVacacionesService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/vacaciones")
@@ -17,32 +19,24 @@ public class VacacionesController {
         this.vacacionesService = vacacionesService;
     }
 
-    @GetMapping("/empleado/{idEmpleado}")
-    public ResponseEntity<List<SolicitudAusencia>> obtenerPorEmpleado(
-            @PathVariable Integer idEmpleado) {
+    @PostMapping
+    public ResponseEntity<SolicitudAusencia> crear(@RequestBody SolicitudAusenciaCreateDTO dto) {
+        return ResponseEntity.ok(vacacionesService.crearSolicitud(dto));
+    }
 
-        return ResponseEntity.ok(
-                vacacionesService.obtenerSolicitudesPorEmpleado(idEmpleado)
-        );
+    @GetMapping("/empleado/{idEmpleado}")
+    public ResponseEntity<List<SolicitudAusencia>> obtenerPorEmpleado(@PathVariable UUID idEmpleado) {
+        return ResponseEntity.ok(vacacionesService.obtenerSolicitudesPorEmpleado(idEmpleado));
     }
 
     @PutMapping("/{id}/aprobar")
-    public ResponseEntity<SolicitudAusencia> aprobarSolicitud(
-            @PathVariable Integer id) {
-
-        return ResponseEntity.ok(
-                vacacionesService.aprobarSolicitud(id)
-        );
+    public ResponseEntity<SolicitudAusencia> aprobarSolicitud(@PathVariable Integer id) {
+        return ResponseEntity.ok(vacacionesService.aprobarSolicitud(id));
     }
 
     @PutMapping("/{id}/rechazar")
-    public ResponseEntity<SolicitudAusencia> rechazarSolicitud(
-            @PathVariable Integer id,
-            @RequestParam String comentario) {
-
-        return ResponseEntity.ok(
-                vacacionesService.rechazarSolicitud(id, comentario)
-        );
+    public ResponseEntity<SolicitudAusencia> rechazarSolicitud(@PathVariable Integer id,
+                                                               @RequestParam String comentario) {
+        return ResponseEntity.ok(vacacionesService.rechazarSolicitud(id, comentario));
     }
 }
-
