@@ -5,13 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequestDTO {
+@Getter
+@Setter
+public class ContadorDTO {
 
-    private String email;
-    private String password;
-
+    private int idEmpleado;
+    private long segundosTranscurridos; //tiempo trabajado en segundos
 }

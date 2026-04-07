@@ -25,5 +25,6 @@ public class AltaRapidaEmpleadoDTO {
     private LocalDate fechaNacimiento;
     private int idEmpresa;
     private String estado;
+    private int idHorario;
 
 }

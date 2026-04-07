@@ -7,11 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequestDTO {
-
-    private String email;
-    private String password;
+@AllArgsConstructor
+public class HorasExtraDTO {
+    private double horasTrabajadas;
+    private double horasContrato;
+    private double horasExtra;
+    private double saldoHoras;
 
 }

@@ -22,6 +22,7 @@ public class EmpleadoDTO {
     private String dni;
     private String departamento;
     private String rol;
+    private String horario;
     private LocalDate fechaAlta;
     private LocalDate fechaNacimiento;
     private String estado;

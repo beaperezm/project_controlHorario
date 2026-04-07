@@ -40,6 +40,9 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
     @Autowired
     private BolsaHorasRepository bolsaHorasRepository;
 
+    @Autowired
+    private HorarioRepository horarioRepository;
+
 
     @Override
     public Empleado altaRapidaEmpleado(AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
@@ -50,6 +53,7 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
 
         Rol rol = rolRepository.findById(altaRapidaEmpleadoDTO.getIdRol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
+        Horario horario = horarioRepository.findById(altaRapidaEmpleadoDTO.getIdHorario()).orElseThrow(() -> new RuntimeException("Horario no encontrado"));
 
         //Se crea el empleado
         Empleado empleado = new Empleado();
@@ -72,6 +76,7 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
         contrato.setRol(rol);
         contrato.setFechaInicio(altaRapidaEmpleadoDTO.getFechaAlta());
         contrato.setCreatedAt(LocalDateTime.now());
+        contrato.setHorario(horario);
         contratoRepository.save(contrato);
 
         return empleado;
@@ -82,6 +87,7 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
       //  Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa()).orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
 
         Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
 
         if(altaRapidaEmpleadoDTO.getNombre() != null) {
             empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
@@ -118,15 +124,13 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
         if(contrato != null) {
             Departamento departamento = departamentoRepository.findById(altaRapidaEmpleadoDTO.getIdDepartamento()).orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
             Rol rol = rolRepository.findById(altaRapidaEmpleadoDTO.getIdRol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+            Horario horario = horarioRepository.findById(altaRapidaEmpleadoDTO.getIdHorario()).orElseThrow(() -> new RuntimeException("Horario no encontrado"));
             contrato.setDepartamento(departamento);
             contrato.setRol(rol);
+            contrato.setHorario(horario);
 
             contratoRepository.save(contrato);
         }
-
-
-
-
 
         return empleado;
     }

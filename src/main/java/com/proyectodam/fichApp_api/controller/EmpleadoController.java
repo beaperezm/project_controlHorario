@@ -84,6 +84,7 @@ public class EmpleadoController {
             empleadoDTO.setEstado(empleado.getEstado().name());
             empleadoDTO.setDepartamento(contrato.getDepartamento().getNombre());
             empleadoDTO.setRol(contrato.getRol().getNombre());
+            empleadoDTO.setHorario(contrato.getHorario().getNombre());
 
 
             empleadoDTOList.add(empleadoDTO);
