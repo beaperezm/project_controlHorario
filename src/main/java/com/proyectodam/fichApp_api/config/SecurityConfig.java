@@ -16,36 +16,30 @@ public class SecurityConfig {
 
     /**
      * Configuración de la cadena de filtros de seguridad.
-     * Aquí definimos quién puede entrar a qué rutas.
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // 1. Deshabilitamos CSRF ya que nuestra API es Stateless y usaremos tokens/Basic Auth más adelante
-            .csrf(AbstractHttpConfigurer::disable)
+                // 1. Deshabilitar CSRF (API Stateless)
+                .csrf(AbstractHttpConfigurer::disable)
 
-            // 2. Configuración de sesiones: Stateless (sin estado) para una API REST
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // 2. Sesiones sin estado
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            // 3. Autorización de peticiones
-            .authorizeHttpRequests(auth -> auth
-                // Rutas públicas de Autenticación (Login, Registro)
-                .requestMatchers("/auth/**").permitAll()
-                
-                // Rutas públicas de Documentación (Swagger/OpenAPI)
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                
-                // ⚠️ ACCESO TEMPORAL PARA DESARROLLO: 
-                // Permitimos que todos los módulos (Fichajes, Vacaciones, Docs) funcionen sin bloqueo
-                .anyRequest().permitAll() 
-            );
+                // 3. Autorización de peticiones
+                .authorizeHttpRequests(auth -> auth
+                        // Rutas públicas (Auth, Swagger)
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+                        //  ACCESO TEMPORAL PARA DESARROLLO
+                        .anyRequest().permitAll());
 
         return http.build();
     }
 
     /**
-     * El Bean PasswordEncoder para el hash de contraseñas y PINs.
-     * Se usará en el Service de Empleados y en el AuthController.
+     * Bean PasswordEncoder
      */
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -1,6 +1,5 @@
 package com.proyectodam.fichApp_api.model;
 
-
 import com.proyectodam.fichApp_api.enums.EstadoSolicitud;
 import jakarta.persistence.*;
 
@@ -55,37 +54,92 @@ public class SolicitudAusencia {
 
     // ===== GETTERS/SETTERS =====
 
-    public Integer getIdSolicitud() { return idSolicitud; }
-    public void setIdSolicitud(Integer idSolicitud) { this.idSolicitud = idSolicitud; }
+    public Integer getIdSolicitud() {
+        return idSolicitud;
+    }
 
-    public Empleado getEmpleado() { return empleado; }
-    public void setEmpleado(Empleado empleado) { this.empleado = empleado; }
+    public void setIdSolicitud(Integer idSolicitud) {
+        this.idSolicitud = idSolicitud;
+    }
 
-    public Empleado getAprobador() { return aprobador; }
-    public void setAprobador(Empleado aprobador) { this.aprobador = aprobador; }
+    public Empleado getEmpleado() {
+        return empleado;
+    }
 
-    public LocalDate getFechaInicio() { return fechaInicio; }
-    public void setFechaInicio(LocalDate fechaInicio) { this.fechaInicio = fechaInicio; }
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
+    }
 
-    public LocalDate getFechaFin() { return fechaFin; }
-    public void setFechaFin(LocalDate fechaFin) { this.fechaFin = fechaFin; }
+    public Empleado getAprobador() {
+        return aprobador;
+    }
 
-    public Integer getDiasHabiles() { return diasHabiles; }
-    public void setDiasHabiles(Integer diasHabiles) { this.diasHabiles = diasHabiles; }
+    public void setAprobador(Empleado aprobador) {
+        this.aprobador = aprobador;
+    }
 
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
 
-    public EstadoSolicitud getEstado() { return estado; }
-    public void setEstado(EstadoSolicitud estado) { this.estado = estado; }
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
 
-    public LocalDateTime getFechaSolicitud() { return fechaSolicitud; }
-    public void setFechaSolicitud(LocalDateTime fechaSolicitud) { this.fechaSolicitud = fechaSolicitud; }
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
 
-    public LocalDateTime getFechaResolucion() { return fechaResolucion; }
-    public void setFechaResolucion(LocalDateTime fechaResolucion) { this.fechaResolucion = fechaResolucion; }
+    public void setFechaFin(LocalDate fechaFin) {
+        this.fechaFin = fechaFin;
+    }
 
-    public String getComentarioGestor() { return comentarioGestor; }
-    public void setComentarioGestor(String comentarioGestor) { this.comentarioGestor = comentarioGestor; }
+    public Integer getDiasHabiles() {
+        return diasHabiles;
+    }
+
+    public void setDiasHabiles(Integer diasHabiles) {
+        this.diasHabiles = diasHabiles;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public EstadoSolicitud getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoSolicitud estado) {
+        this.estado = estado;
+    }
+
+    public LocalDateTime getFechaSolicitud() {
+        return fechaSolicitud;
+    }
+
+    public void setFechaSolicitud(LocalDateTime fechaSolicitud) {
+        this.fechaSolicitud = fechaSolicitud;
+    }
+
+    public LocalDateTime getFechaResolucion() {
+        return fechaResolucion;
+    }
+
+    public void setFechaResolucion(LocalDateTime fechaResolucion) {
+        this.fechaResolucion = fechaResolucion;
+    }
+
+    public String getComentarioGestor() {
+        return comentarioGestor;
+    }
+
+    public void setComentarioGestor(String comentarioGestor) {
+        this.comentarioGestor = comentarioGestor;
+    }
 
 }

@@ -1,6 +1,5 @@
 package com.proyectodam.fichApp_api.service.impl;
 
-
 import com.proyectodam.fichApp_api.enums.EstadoSolicitud;
 import com.proyectodam.fichApp_api.model.SolicitudAusencia;
 import com.proyectodam.fichApp_api.repository.SolicitudAusenciaRepository;
@@ -47,4 +46,3 @@ public class VacacionesServiceImpl implements IVacacionesService {
         return solicitudAusenciaRepository.save(solicitud);
     }
 }
-

@@ -6,10 +6,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Getter
 @Setter
@@ -18,69 +16,72 @@ import lombok.Setter;
 @Data
 public class Empleado {
 
-  /*  @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_empleado", updatable = false, nullable = false)
-    private UUID idEmpleado2;*/
+  /*
+   * @Id
+   * 
+   * @GeneratedValue(strategy = GenerationType.UUID)
+   * 
+   * @Column(name = "id_empleado", updatable = false, nullable = false)
+   * private UUID idEmpleado2;
+   */
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_empleado", updatable = false, nullable = false)
-    private int idEmpleado;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id_empleado", updatable = false, nullable = false)
+  private int idEmpleado;
 
-    @ManyToOne
-    @JoinColumn(name = "id_empresa")
-    private Empresa empresa;
+  @ManyToOne
+  @JoinColumn(name = "id_empresa")
+  private Empresa empresa;
 
-    @Column(nullable = false, length = 100)
-    private String nombre;
+  @Column(nullable = false, length = 100)
+  private String nombre;
 
-    @Column(nullable = false, length = 100)
-    private String apellidos;
+  @Column(nullable = false, length = 100)
+  private String apellidos;
 
-    @Column(unique = true)
-    private String email;
+  @Column(unique = true)
+  private String email;
 
-   /* @Column(name = "password_hash")
-    private String passwordHash;*/
+  @Column(name = "password_hash")
+  private String passwordHash;
 
-    @Column(name = "pin_quiosco_hash")
-    private String pinQuioscoHash;
+  @Column(name = "pin_quiosco_hash")
+  private String pinQuioscoHash;
 
-    @Column(name = "img_perfil_url")
-    private String imgPerfilUrl;
+  @Column(name = "img_perfil_url")
+  private String imgPerfilUrl;
 
-    @Column(name = "dni_nie", length = 20)
-    private String dniNie;
+  @Column(name = "dni_nie", length = 20)
+  private String dniNie;
 
-    @Column(name = "fecha_nacimiento")
-    private LocalDate fechaNacimiento;
+  @Column(name = "fecha_nacimiento")
+  private LocalDate fechaNacimiento;
 
-    @Enumerated(EnumType.STRING)
-    private TipoGenero genero;
+  @Enumerated(EnumType.STRING)
+  private TipoGenero genero;
 
-    @Enumerated(EnumType.STRING)
-    private EstadoEmpleado estado = EstadoEmpleado.ACTIVO;
+  @Enumerated(EnumType.STRING)
+  private EstadoEmpleado estado = EstadoEmpleado.ACTIVO;
 
-    @Column(name = "fecha_alta_sistema")
-    private LocalDate fechaAltaSistema = LocalDate.now();
+  @Column(name = "fecha_alta_sistema")
+  private LocalDate fechaAltaSistema = LocalDate.now();
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
 
+  private String direccion;
 
-    private String direccion;
+  @Column(nullable = false)
+  private String telefono;
 
-    @Column(nullable = false)
-    private String telefono;
+  @Column(length = 20)
+  private String nuss;
 
+  @Column(name = "auth_user_id", unique = true)
+  private String authUserId;
 
-    @Column(length = 20)
-    private String nuss;
+  @Column(name= "activo_en_auth", nullable = false)
+  private boolean activoEnAuth = false;
 
-    @Column(name = "auth_user_id", unique = true)
-    private String authUserId;
-
-    @Column(name= "activo_en_auth", nullable = false)
-    private boolean activoEnAuth = false;
 }

@@ -16,6 +16,9 @@ public class RolController {
     @Autowired
     private IRolService iRolService;
 
+    /**
+     * Devuelve la lista completa de roles definidos en el sistema.
+     */
     @GetMapping("/all")
     public List<Rol> getAllRoles() {
         return iRolService.getAllRoles();

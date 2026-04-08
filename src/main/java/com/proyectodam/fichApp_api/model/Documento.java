@@ -1,6 +1,5 @@
 package com.proyectodam.fichApp_api.model;
 
-import com.proyectodam.fichApp_api.enums.CategoriaDocumento;
 import com.proyectodam.fichApp_api.enums.EstadoFirma;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,6 +7,10 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entidad que representa un documento almacenado en el sistema (nóminas,
+ * contratos, etc.).
+ */
 @Entity
 @Table(name = "documentos")
 @Data
@@ -20,22 +23,21 @@ public class Documento {
     private Long id;
 
     @Column(nullable = false)
-    private String nombreArchivo; // Ej: NOM_123_202511.pdf
+    private String nombreArchivo;
 
     @Column(nullable = false)
-    private String rutaAcceso; // Local: C:/... | Cloud: URL Supabase
+    private String rutaAcceso; // Local: C:/| Cloud: URL Supabase
 
     @Column(nullable = false)
-    private String tipoMime; // application/pdf, image/png
+    private String tipoMime; // Tipo de archivo: application/pdf, image/png, etc.
 
     private long tamanoBytes;
 
     @Column(unique = true)
-    private String hashDocumento; // SHA-256 para verificar integridad (Crucial para PRL/Nóminas)
+    private String hashDocumento; // Hash SHA-256 para asegurar la integridad del documento
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private CategoriaDocumento categoria;
+    @Column(nullable = false, length = 100)
+    private String categoria;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

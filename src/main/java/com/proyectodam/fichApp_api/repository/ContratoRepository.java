@@ -15,19 +15,20 @@ import java.util.Optional;
 
 @Repository
 public interface ContratoRepository extends JpaRepository<Contrato, Integer> {
+    List<Contrato> findByEmpleado_IdEmpleado(Integer idEmpleado);
 
     @Modifying
     @Transactional
     @Query("DELETE FROM Contrato c WHERE c.empleado.idEmpleado = :idEmpleado")
     void borrarEmpleadoPorId(@Param("idEmpleado") int idEmpleado);
 
-    @Query("SELECT c FROM Contrato c " + "JOIN FETCH c.empleado e " + "JOIN FETCH c.departamento d " + "JOIN FETCH c.rol r " +  "WHERE e.estado <> com.proyectodam.fichApp_api.enums.EstadoEmpleado.INACTIVO")
+    @Query("SELECT c FROM Contrato c " + "JOIN FETCH c.empleado e " + "JOIN FETCH c.departamento d "
+            + "JOIN FETCH c.rol r " + "WHERE e.estado <> com.proyectodam.fichApp_api.enums.EstadoEmpleado.INACTIVO")
     List<Contrato> findContratosConEmpleadoActivo();
 
     Contrato findTopByEmpleadoOrderByFechaInicioDesc(Empleado empleado);
 
     @Query("SELECT c FROM Contrato c WHERE c.empleado.idEmpleado = :idEmpleado AND c.fechaInicio <= :hoy AND (c.fechaFin IS NULL OR c.fechaFin >= :hoy)")
     Optional<Contrato> buscarContratoActivo(@Param("idEmpleado") int idEmpleado, @Param("hoy") LocalDate hoy);
-
 
 }

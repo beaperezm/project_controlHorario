@@ -20,10 +20,13 @@ public class EmpleadoDTO {
     private String direccion;
     private String telefono;
     private String dni;
+
+    // De main
     private String departamento;
     private String rol;
     private String horario;
     private LocalDate fechaAlta;
+    private LocalDate fechaAltaSistema;
     private LocalDate fechaNacimiento;
     private String estado;
 }
