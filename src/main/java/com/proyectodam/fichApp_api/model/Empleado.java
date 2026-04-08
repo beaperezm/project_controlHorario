@@ -77,4 +77,11 @@ public class Empleado {
 
   @Column(length = 20)
   private String nuss;
+
+  @Column(name = "auth_user_id", unique = true)
+  private String authUserId;
+
+  @Column(name= "activo_en_auth", nullable = false)
+  private boolean activoEnAuth = false;
+
 }

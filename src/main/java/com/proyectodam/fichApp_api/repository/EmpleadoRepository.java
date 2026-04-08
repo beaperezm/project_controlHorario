@@ -18,4 +18,5 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 
     long countByEstado(EstadoEmpleado estadoEmpleado);
 
+    Optional<Empleado> findByAuthUserId(String userId);
 }

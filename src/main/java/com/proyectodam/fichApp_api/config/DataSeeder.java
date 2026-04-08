@@ -1,6 +1,6 @@
 // TODO: Eliminar esta clase una vez que la base de datos real esté operativa.
 
-package com.proyectodam.fichApp_api.config;
+/*package com.proyectodam.fichApp_api.config;
 
 import com.proyectodam.fichApp_api.enums.EstadoEmpleado;
 import com.proyectodam.fichApp_api.enums.MetodoFichaje;
@@ -234,4 +234,4 @@ public class DataSeeder implements CommandLineRunner {
         }
         return hexString.toString();
     }
-}
+}*/

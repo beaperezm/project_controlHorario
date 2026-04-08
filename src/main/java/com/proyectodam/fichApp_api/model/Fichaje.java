@@ -2,16 +2,7 @@ package com.proyectodam.fichApp_api.model;
 
 import com.proyectodam.fichApp_api.enums.MetodoFichaje;
 import com.proyectodam.fichApp_api.enums.TipoEventoFichaje;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,6 +33,7 @@ public class Fichaje {
     @Column(name = "metodo_registro")
     private MetodoFichaje metodoRegistro;
 
+    @Column(name = "dispositivo_id")
     private String dispositivoId;
 
     @Column(name = "geolocalizacion_lat")
@@ -50,14 +42,17 @@ public class Fichaje {
     @Column(name = "geolocalizacion_long")
     private Float geolocalizacionLong;
 
+    @Column(name = "es_valido")
     private Boolean esValido;
+
+    @Column(name = "es_modificado")
     private Boolean esModificado;
 
     private String comentario;
     private Boolean sincronizado;
 
-    @ManyToOne
-    @JoinColumn(name = "id_empleado")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_empleado", nullable = false)
     private Empleado empleado;
 
 }

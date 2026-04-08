@@ -19,7 +19,7 @@ public interface IEmpleadoService {
 
     List<Empleado> getAllEmpleados();
 
-    List<EmpleadoDTO> listarTodos();
+  //  List<EmpleadoDTO> listarTodos();
 
     void borradoLogicoEmpleado(int id);
 

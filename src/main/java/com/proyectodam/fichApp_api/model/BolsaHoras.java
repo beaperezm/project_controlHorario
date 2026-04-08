@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,7 +21,7 @@ public class BolsaHoras {
     @Column(name = "saldo_acumulado")
     private Double saldoHoras;
     @Column(name = "ultima_actualizacion")
-    private LocalDateTime ultimaActualizacion;
+    private LocalDate ultimaActualizacion;
 
     private int anio;
 

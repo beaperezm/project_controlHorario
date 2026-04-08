@@ -17,7 +17,7 @@ import java.util.List;
 import com.proyectodam.fichApp_api.dto.EmpleadoDTO;
 
 @RestController
-@RequestMapping("/api/empleados")
+@RequestMapping("/empleados")
 public class EmpleadoController {
 
     @Autowired
@@ -43,12 +43,19 @@ public class EmpleadoController {
      * rápida.
      */
     @PutMapping("/empleado/{id}")
+    public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable int id, @RequestBody AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
+        Empleado empleado = iEmpleadoService.actualizarEmpleado(id, altaRapidaEmpleadoDTO);
+        System.out.println("ESTADO EMPLEADO: " + empleado.getEstado());
+        return ResponseEntity.ok(empleado);
+    }
+
+  /*  @PutMapping("/empleado/{id}")
     public ResponseEntity<Empleado> actualizarEmpleadoEnAltaRapidaEmpleado(@PathVariable int id,
             @RequestBody AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
         Empleado empleado = iEmpleadoService.actualizarEmpleado(id, altaRapidaEmpleadoDTO);
         System.out.println("ESTADO EMPLEADO: " + empleado.getEstado());
         return ResponseEntity.ok(empleado);
-    }
+    }*/
 
     /**
      * Elimina un empleado del sistema.
@@ -63,9 +70,13 @@ public class EmpleadoController {
      * Obtiene todos los empleados para autocompletados e interfaz.
      */
     @GetMapping("/all")
+    public List<Empleado> getAllEmpleados() {
+        return iEmpleadoService.getAllEmpleados();
+    }
+  /*  @GetMapping("/all")
     public ResponseEntity<List<EmpleadoDTO>> listarTodos() {
         return ResponseEntity.ok(iEmpleadoService.listarTodos());
-    }
+    }*/
 
     @PostMapping("/empleado/{id}/baja")
     public ResponseEntity<?> borradoLogicoEmpleado(@PathVariable int id) {
@@ -91,11 +102,12 @@ public class EmpleadoController {
             empleadoDTO.setDireccion(empleado.getDireccion());
             empleadoDTO.setTelefono(empleado.getTelefono());
             empleadoDTO.setDni(empleado.getDniNie());
-            empleadoDTO.setFechaAltaSistema(empleado.getFechaAltaSistema());
+            empleadoDTO.setFechaAlta(empleado.getFechaAltaSistema());
             empleadoDTO.setFechaNacimiento(empleado.getFechaNacimiento());
             empleadoDTO.setEstado(empleado.getEstado().name());
             empleadoDTO.setDepartamento(contrato.getDepartamento().getNombre());
             empleadoDTO.setRol(contrato.getRol().getNombre());
+            empleadoDTO.setHorario(contrato.getHorario().getNombre());
 
             empleadoDTOList.add(empleadoDTO);
         }

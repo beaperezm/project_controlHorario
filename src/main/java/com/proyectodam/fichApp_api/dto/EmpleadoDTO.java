@@ -24,6 +24,7 @@ public class EmpleadoDTO {
     // De main
     private String departamento;
     private String rol;
+    private String horario;
     private LocalDate fechaAlta;
     private LocalDate fechaAltaSistema;
     private LocalDate fechaNacimiento;

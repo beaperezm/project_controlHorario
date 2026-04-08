@@ -13,234 +13,285 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import com.proyectodam.fichApp_api.dto.EmpleadoDTO;
 
 @Service
 public class EmpleadoServiceImpl implements IEmpleadoService {
 
-        @Autowired
-        private EmpleadoRepository empleadoRepository;
+    @Autowired
+    private EmpleadoRepository empleadoRepository;
 
-        @Autowired
-        private EmpresaRepository empresaRepository;
+    @Autowired
+    private EmpresaRepository empresaRepository;
 
-        @Autowired
-        private DepartamentoRepository departamentoRepository;
+    @Autowired
+    private DepartamentoRepository departamentoRepository;
 
-        @Autowired
-        private RolRepository rolRepository;
+    @Autowired
+    private RolRepository rolRepository;
 
-        @Autowired
-        private ContratoRepository contratoRepository;
+    @Autowired
+    private ContratoRepository contratoRepository;
 
-        @Autowired
-        private BolsaVacacionesRepository bolsaVacacionesRepository;
+    @Autowired
+    private BolsaVacacionesRepository bolsaVacacionesRepository;
 
-        @Autowired
-        private BolsaHorasRepository bolsaHorasRepository;
+    @Autowired
+    private BolsaHorasRepository bolsaHorasRepository;
 
-        @Autowired
-        private HorarioRepository horarioRepository;
+    @Autowired
+    private HorarioRepository horarioRepository;
 
-        @Override
-        public Empleado altaRapidaEmpleado(AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
 
-                Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa())
-                                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+    @Override
+    public Empleado altaRapidaEmpleado(AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
 
-                Departamento departamento = departamentoRepository.findById(altaRapidaEmpleadoDTO.getIdDepartamento())
-                                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+        Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa())
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
 
-                Rol rol = rolRepository.findById(altaRapidaEmpleadoDTO.getIdRol())
-                                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+        Departamento departamento = departamentoRepository.findById(altaRapidaEmpleadoDTO.getIdDepartamento())
+                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+
+        Rol rol = rolRepository.findById(altaRapidaEmpleadoDTO.getIdRol())
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+
+        Horario horario = horarioRepository.findById(altaRapidaEmpleadoDTO.getIdHorario()).orElseThrow(() -> new RuntimeException("Horario no encontrado"));
 
                 // Se crea el empleado
-                Empleado empleado = new Empleado();
-                empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
-                empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
-                empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
-                empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
-                empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
-                empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
-                empleado.setEstado(EstadoEmpleado.ACTIVO);
-                empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
-                empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
-                empleado.setEmpresa(empresa);
-                empleadoRepository.save(empleado);
+        Empleado empleado = new Empleado();
+        empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
+        empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
+        empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
+        empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
+        empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
+        empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
+        empleado.setEstado(EstadoEmpleado.ACTIVO);
+        empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
+        empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
+        empleado.setEmpresa(empresa);
+        empleadoRepository.save(empleado);
 
-                // Se crea el contrato
-                Contrato contrato = new Contrato();
-                contrato.setEmpleado(empleado);
-                contrato.setDepartamento(departamento);
-                contrato.setRol(rol);
-                contrato.setFechaInicio(altaRapidaEmpleadoDTO.getFechaAlta());
-                contrato.setCreatedAt(LocalDateTime.now());
 
-                // Asignar Horario por defecto (el primero que encuentre de la empresa o
-                // general)
-                Horario horarioDefecto = horarioRepository.findAll().stream()
-                                .filter(h -> h.getEmpresa().getIdEmpresa() == empresa.getIdEmpresa())
-                                .findFirst()
-                                .orElse(null);
+        //Se crea el contrato
+        Contrato contrato = new Contrato();
+        contrato.setEmpleado(empleado);
+        contrato.setDepartamento(departamento);
+        contrato.setRol(rol);
+        contrato.setFechaInicio(altaRapidaEmpleadoDTO.getFechaAlta());
+        contrato.setCreatedAt(LocalDateTime.now());
+        contrato.setHorario(horario);
+        contratoRepository.save(contrato);
 
-                if (horarioDefecto != null) {
-                        contrato.setHorario(horarioDefecto);
-                } else {
-                        System.out.println("ADVERTENCIA: No se encontró horario por defecto para la empresa "
-                                        + empresa.getNombre());
-                }
+        return empleado;
+    }
 
-                contratoRepository.save(contrato);
+    @Override
+    public Empleado actualizarEmpleado(int id, AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
 
-                return empleado;
+        Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+        if (altaRapidaEmpleadoDTO.getNombre() != null) {
+            empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
+        }
+        if (altaRapidaEmpleadoDTO.getApellidos() != null) {
+            empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
+        }
+        if (altaRapidaEmpleadoDTO.getEmail() != null) {
+            empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
+        }
+        if (altaRapidaEmpleadoDTO.getDireccion() != null) {
+            empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
+        }
+        if (altaRapidaEmpleadoDTO.getTelefono() != null) {
+            empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
+        }
+        if (altaRapidaEmpleadoDTO.getDni() != null) {
+            empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
+        }
+        if (altaRapidaEmpleadoDTO.getFechaAlta() != null) {
+            empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
+        }
+        if (altaRapidaEmpleadoDTO.getFechaNacimiento() != null) {
+            empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
         }
 
-        @Override
-        public Empleado actualizarEmpleado(int id, AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
+        empleado.setEstado(EstadoEmpleado.valueOf(altaRapidaEmpleadoDTO.getEstado()));
+        empleado.setUpdatedAt(LocalDateTime.now());
 
-                Empleado empleado = empleadoRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+        empleadoRepository.save(empleado);
 
-                if (altaRapidaEmpleadoDTO.getNombre() != null) {
-                        empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
-                }
-                if (altaRapidaEmpleadoDTO.getApellidos() != null) {
-                        empleado.setApellidos(altaRapidaEmpleadoDTO.getApellidos());
-                }
-                if (altaRapidaEmpleadoDTO.getEmail() != null) {
-                        empleado.setEmail(altaRapidaEmpleadoDTO.getEmail());
-                }
-                if (altaRapidaEmpleadoDTO.getDireccion() != null) {
-                        empleado.setDireccion(altaRapidaEmpleadoDTO.getDireccion());
-                }
-                if (altaRapidaEmpleadoDTO.getTelefono() != null) {
-                        empleado.setTelefono(altaRapidaEmpleadoDTO.getTelefono());
-                }
-                if (altaRapidaEmpleadoDTO.getDni() != null) {
-                        empleado.setDniNie(altaRapidaEmpleadoDTO.getDni());
-                }
-                if (altaRapidaEmpleadoDTO.getFechaAlta() != null) {
-                        empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
-                }
-                if (altaRapidaEmpleadoDTO.getFechaNacimiento() != null) {
-                        empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
-                }
 
-                if (altaRapidaEmpleadoDTO.getEstado() != null) {
-                        empleado.setEstado(EstadoEmpleado.valueOf(altaRapidaEmpleadoDTO.getEstado()));
-                }
-                empleado.setUpdatedAt(LocalDateTime.now());
 
-                empleadoRepository.save(empleado);
+        Contrato contrato = contratoRepository.findTopByEmpleadoOrderByFechaInicioDesc(empleado);
+        if (contrato != null) {
+            Departamento departamento = departamentoRepository.findById(altaRapidaEmpleadoDTO.getIdDepartamento()).orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+            Rol rol = rolRepository.findById(altaRapidaEmpleadoDTO.getIdRol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+            Horario horario = horarioRepository.findById(altaRapidaEmpleadoDTO.getIdHorario()).orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+            contrato.setDepartamento(departamento);
+            contrato.setRol(rol);
+            contrato.setHorario(horario);
 
-                Contrato contrato = contratoRepository.findTopByEmpleadoOrderByFechaInicioDesc(empleado);
-                if (contrato != null) {
-                        Departamento departamento = departamentoRepository
-                                        .findById(altaRapidaEmpleadoDTO.getIdDepartamento())
-                                        .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
-                        Rol rol = rolRepository.findById(altaRapidaEmpleadoDTO.getIdRol())
-                                        .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
-                        contrato.setDepartamento(departamento);
-                        contrato.setRol(rol);
-
-                        contratoRepository.save(contrato);
-                }
-
-                return empleado;
+            contratoRepository.save(contrato);
         }
+        return empleado;
+       }
 
-        @Transactional
-        @Override
-        public void borrarEmpleadoEnAltaRapidaEmpleado(int id) {
-                Empleado empleado = empleadoRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
-                contratoRepository.borrarEmpleadoPorId(id);
-                empleadoRepository.delete(empleado);
+       @Transactional
+       @Override
+       public void borrarEmpleadoEnAltaRapidaEmpleado(int id) {
+               Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+               contratoRepository.borrarEmpleadoPorId(id);
+               empleadoRepository.delete(empleado);
+       }
+
+       @Override
+       public List<Empleado> getAllEmpleados() {
+               return empleadoRepository.findAll();
+       }
+
+
+    @Transactional
+    @Override
+    public void borradoLogicoEmpleado(int id) {
+        Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+        /*if (empleado.getEstado() != EstadoEmpleado.INACTIVO) {
+            empleado.setEstado(EstadoEmpleado.INACTIVO);*/
+
+        empleado.setEstado(EstadoEmpleado.INACTIVO);
+        empleado.setUpdatedAt(LocalDateTime.now());
+
+        empleadoRepository.save(empleado);
+    }
+
+    public List<Empleado> getAllEmpleadosWithoutInactive() {
+        return empleadoRepository.findByEstadoNot(EstadoEmpleado.INACTIVO);
+    }
+
+    @Override
+    public EmpleadoDetalleDTO getEmpleadoDetalle(int id) {
+
+        Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+        EmpleadoDetalleDTO empleadoDetalleDTO = new EmpleadoDetalleDTO();
+        empleadoDetalleDTO.setIdEmpleado(empleado.getIdEmpleado());
+        empleadoDetalleDTO.setNombreApellidos(empleado.getNombre() + " " + empleado.getApellidos());
+        empleadoDetalleDTO.setEmail(empleado.getEmail());
+        empleadoDetalleDTO.setTelefono(empleado.getTelefono());
+        empleadoDetalleDTO.setDireccion(empleado.getDireccion());
+
+        Contrato contrato = contratoRepository.findTopByEmpleadoOrderByFechaInicioDesc(empleado);
+        if(contrato != null) {
+            empleadoDetalleDTO.setDepartamento(contrato.getDepartamento().getNombre());
+            empleadoDetalleDTO.setRol(contrato.getRol().getNombre());
+
+            if(contrato.getHorario() != null) {
+                empleadoDetalleDTO.setHorario(contrato.getHorario().getNombre());
+                empleadoDetalleDTO.setConfiguracionHorario(contrato.getHorario().getConfiguracionSemanal());
+            }
+
+            int anioActual = LocalDate.now().getYear();
+            BolsaVacaciones bolsaVacaciones = bolsaVacacionesRepository.findByEmpleado_IdEmpleadoAndAnio(id, anioActual);
+
+            if(bolsaVacaciones != null) {
+                empleadoDetalleDTO.setDiasVacacionesTotales(bolsaVacaciones.getDiasTotalesAsignados());
+                empleadoDetalleDTO.setDiasVacacionesPendientes(bolsaVacaciones.getDiasPendientesAnioAnterior());
+            }
+
+            BolsaHoras bolsaHoras = bolsaHorasRepository.findByEmpleado_IdEmpleado(id);
+
+            if(bolsaHoras != null) {
+                empleadoDetalleDTO.setHorasExtra(bolsaHoras.getSaldoHoras());
+            }
         }
+        return empleadoDetalleDTO;
+    }
 
-        @Override
-        public List<Empleado> getAllEmpleados() {
-                return empleadoRepository.findAll();
-        }
+    @Override
+    public EmpleadoEstadoContadorDTO countEstadoEmpleados() {
 
-        @Override
-        public List<EmpleadoDTO> listarTodos() {
-                return empleadoRepository.findAll().stream().map(
-                                e -> {
-                                        EmpleadoDTO dto = new EmpleadoDTO();
-                                        dto.setIdEmpleado(e.getIdEmpleado());
-                                        dto.setNombre(e.getNombre());
-                                        dto.setApellidos(e.getApellidos());
-                                        dto.setEmail(e.getEmail());
-                                        dto.setTelefono(e.getTelefono());
-                                        dto.setEstado(e.getEstado().name());
-                                        return dto;
-                                }).collect(Collectors.toList());
-        }
+        EmpleadoEstadoContadorDTO empleadoEstadoContadorDTO = new EmpleadoEstadoContadorDTO();
+        empleadoEstadoContadorDTO.setTotalEmpleados(empleadoRepository.count());
+        empleadoEstadoContadorDTO.setActivos(empleadoRepository.countByEstado(EstadoEmpleado.ACTIVO));
+        empleadoEstadoContadorDTO.setInactivos(empleadoRepository.countByEstado(EstadoEmpleado.INACTIVO));
+        empleadoEstadoContadorDTO.setBajaMedica(empleadoRepository.countByEstado(EstadoEmpleado.BAJA_MEDICA));
+        empleadoEstadoContadorDTO.setExcedencia(empleadoRepository.countByEstado(EstadoEmpleado.EXCEDENCIA));
+        return empleadoEstadoContadorDTO;
+    }
 
-        @Override
-        public void borradoLogicoEmpleado(int id) {
-                Empleado empleado = empleadoRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+    @Override
+    public long countEmpleadosByEstado(EstadoEmpleado estadoEmpleado) {
+        return empleadoRepository.countByEstado(estadoEmpleado);
+    }
 
-                if (empleado.getEstado() != EstadoEmpleado.INACTIVO) {
-                        empleado.setEstado(EstadoEmpleado.INACTIVO);
-                        empleadoRepository.save(empleado);
-                }
-        }
 
-        @Override
-        public List<Empleado> getAllEmpleadosWithoutInactive() {
-                return empleadoRepository.findByEstadoNot(EstadoEmpleado.INACTIVO);
-        }
 
-        @Override
-        public EmpleadoDetalleDTO getEmpleadoDetalle(int id) {
-                Empleado empleado = empleadoRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+    /*   @Override
+     public List<EmpleadoDTO> listarTodos() {
+             return empleadoRepository.findAll().stream().map(
+                             e -> {
+                                     EmpleadoDTO dto = new EmpleadoDTO();
+                                     dto.setIdEmpleado(e.getIdEmpleado());
+                                     dto.setNombre(e.getNombre());
+                                     dto.setApellidos(e.getApellidos());
+                                     dto.setEmail(e.getEmail());
+                                     dto.setTelefono(e.getTelefono());
+                                     dto.setEstado(e.getEstado().name());
+                                     return dto;
+                             }).collect(Collectors.toList());
+     }*/
 
-                BolsaVacaciones bv = bolsaVacacionesRepository.findByEmpleado_IdEmpleadoAndAnio(id,
-                                LocalDate.now().getYear());
-                int vacT = (bv != null) ? (bv.getDiasTotalesAsignados() != null ? bv.getDiasTotalesAsignados() : 0) : 0;
-                int vacD = 0; // Se asume que vendrá de otra parte, por simplificar de momento
 
-                BolsaHoras bh = bolsaHorasRepository.findByEmpleado_IdEmpleado(id);
-                int horP = (bh != null && bh.getSaldoHoras() != null && bh.getSaldoHoras() > 0)
-                                ? bh.getSaldoHoras().intValue()
-                                : 0;
-                int horN = (bh != null && bh.getSaldoHoras() != null && bh.getSaldoHoras() < 0)
-                                ? bh.getSaldoHoras().intValue()
-                                : 0;
+     /*   @Override
+       public EmpleadoDetalleDTO getEmpleadoDetalle(int id) {
+               Empleado empleado = empleadoRepository.findById(id)
+                               .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
 
-                EmpleadoDetalleDTO dto = new EmpleadoDetalleDTO();
-                dto.setDiasVacacionesTotales(vacT);
-                dto.setDiasVacacionesPendientes(vacD);
-                dto.setHorasExtra(horP > 0 ? horP : horN); // Simple conversión de ejemplo
+               BolsaVacaciones bv = bolsaVacacionesRepository.findByEmpleado_IdEmpleadoAndAnio(id,
+                               LocalDate.now().getYear());
+               int vacT = (bv != null) ? (bv.getDiasTotalesAsignados() != null ? bv.getDiasTotalesAsignados() : 0) : 0;
+               int vacD = 0; // Se asume que vendr&aacute; de otra parte, por simplificar de momento
 
-                return dto;
-        }
+               BolsaHoras bh = bolsaHorasRepository.findByEmpleado_IdEmpleado(id);
+               int horP = (bh != null && bh.getSaldoHoras() != null && bh.getSaldoHoras() > 0)
+                               ? bh.getSaldoHoras().intValue()
+                               : 0;
+               int horN = (bh != null && bh.getSaldoHoras() != null && bh.getSaldoHoras() < 0)
+                               ? bh.getSaldoHoras().intValue()
+                               : 0;
 
-        @Override
-        public EmpleadoEstadoContadorDTO countEstadoEmpleados() {
-                EmpleadoEstadoContadorDTO estadoDTO = new EmpleadoEstadoContadorDTO();
-                estadoDTO.setActivos((long) empleadoRepository.countByEstado(EstadoEmpleado.ACTIVO));
-                estadoDTO.setBajaMedica((long) empleadoRepository.countByEstado(EstadoEmpleado.BAJA_MEDICA));
+               EmpleadoDetalleDTO dto = new EmpleadoDetalleDTO();
+               dto.setDiasVacacionesTotales(vacT);
+               dto.setDiasVacacionesPendientes(vacD);
+               dto.setHorasExtra(horP > 0 ? horP : horN); // Simple conversi&oacute;n de ejemplo
 
-                // Estos podrían necesitar más lógica pero los asigno al count correspondiente o
-                // cero si no cuadran
-                estadoDTO.setExcedencia(0L);
-                estadoDTO.setInactivos((long) empleadoRepository.countByEstado(EstadoEmpleado.INACTIVO));
+               return dto;
+       }
 
-                // EmpleadoEstadoContadorDTO no tiene setVacaciones ni setIncapacidad
-                return estadoDTO;
-        }
+       @Override
+       public EmpleadoEstadoContadorDTO countEstadoEmpleados() {
+               EmpleadoEstadoContadorDTO estadoDTO = new EmpleadoEstadoContadorDTO();
+               estadoDTO.setActivos((long) empleadoRepository.countByEstado(EstadoEmpleado.ACTIVO));
+               estadoDTO.setBajaMedica((long) empleadoRepository.countByEstado(EstadoEmpleado.BAJA_MEDICA));
 
-        @Override
-        public long countEmpleadosByEstado(EstadoEmpleado estadoEmpleado) {
-                return empleadoRepository.countByEstado(estadoEmpleado);
-        }
+               // Estos podr&iacute;an necesitar m&aacute;s l&oacute;gica pero los asigno al count correspondiente o
+               // cero si no cuadran
+               estadoDTO.setExcedencia(0L);
+               estadoDTO.setInactivos((long) empleadoRepository.countByEstado(EstadoEmpleado.INACTIVO));
+
+               // EmpleadoEstadoContadorDTO no tiene setVacaciones ni setIncapacidad
+               return estadoDTO;
+       }
+
+      */
+
+
+
 
 }
+
+
+
+
+
