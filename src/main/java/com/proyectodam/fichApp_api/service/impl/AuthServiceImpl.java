@@ -44,8 +44,6 @@ public class AuthServiceImpl implements IAuthService {
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
         String url = supabaseUrl + "/auth/v1/token?grant_type=password";
 
-        System.out.println("SUPABASE URL: [" + supabaseUrl + "]");
-        System.out.println("URL FINAL: [" + url + "]");
 
         Map<String, String> body = Map.of(
                 "email", loginRequestDTO.getEmail(),
@@ -144,8 +142,6 @@ public class AuthServiceImpl implements IAuthService {
 
         String url = supabaseUrl + "/auth/v1/signup";
 
-        System.out.println("SUPABASE URL: [" + supabaseUrl + "]");
-        System.out.println("URL FINAL: [" + url + "]");
 
         Map<String, Object> body = Map.of("email", activarCuentaDTO.getEmail(), "password", activarCuentaDTO.getPassword());
 
@@ -162,7 +158,6 @@ public class AuthServiceImpl implements IAuthService {
 
 
         } catch (WebClientResponseException e) {
-            System.out.println("ERROR SUPABASE: " + e.getResponseBodyAsString());
             throw new RuntimeException("Error creando usuario: " + e.getResponseBodyAsString());
         }
 

@@ -66,4 +66,10 @@ public class ControlHorarioController {
     public HorasExtraDTO obtenerHorasExtra(@PathVariable int idEmpleado) {
         return iFichajeService.calcularHorasExtra(idEmpleado);
     }
+
+    @GetMapping("/bolsa-horas/{idEmpleado}")
+    public ResponseEntity<Double> obtenerBolsaHoras(@PathVariable int idEmpleado) {
+        double saldo = iFichajeService.recalcularBolsaHoras(idEmpleado);
+        return ResponseEntity.ok(saldo);
+    }
 }
