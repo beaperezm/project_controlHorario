@@ -45,7 +45,6 @@ public class EmpleadoController {
     @PutMapping("/empleado/{id}")
     public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable int id, @RequestBody AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
         Empleado empleado = iEmpleadoService.actualizarEmpleado(id, altaRapidaEmpleadoDTO);
-        System.out.println("ESTADO EMPLEADO: " + empleado.getEstado());
         return ResponseEntity.ok(empleado);
     }
 
