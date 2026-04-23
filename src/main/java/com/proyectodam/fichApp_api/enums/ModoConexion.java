@@ -2,12 +2,13 @@ package com.proyectodam.fichApp_api.enums;
 
 /**
  * Enumerado que define los modos de conexión disponibles para la aplicación.
- * Permite alternar entre entorno local, servidor de pruebas y entorno en la
- * nube.
+ * Permite alternar entre entorno local, remoto personalizado (VPS/Servidor propio), 
+ * entorno de pruebas con semilla o infraestructura cloud (Supabase).
  */
 public enum ModoConexion {
     LOCAL("local", "http://localhost:8080"),
-    SERVIDOR("server", "https://fichapp.duckdns.org"),
+    REMOTO("server", null), // Antes SERVIDOR. URL null para obligar a configurar url_personalizada.
+    REMOTESEED("remoteseed", null), // Perfil para pruebas con datos de semilla remotos
     SUPABASE("supabase", null);
 
     private final String perfilSpring;
@@ -36,6 +37,6 @@ public enum ModoConexion {
                 return modo;
             }
         }
-        return LOCAL; // Por defecto ante cualquier duda, mejor no conectar a producción
+        return LOCAL;
     }
 }

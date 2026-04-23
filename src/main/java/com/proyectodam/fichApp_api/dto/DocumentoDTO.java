@@ -1,5 +1,6 @@
 package com.proyectodam.fichApp_api.dto;
 
+import com.proyectodam.fichApp_api.enums.EstadoFirma;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,4 +24,8 @@ public class DocumentoDTO {
     private Integer idEmpleado;
     private String nombreEmpleado;
     private String departamento;
+    private EstadoFirma estadoFirma;
+    private Integer anio;
+    private Integer mes;
+    private String etiquetas;
 }

@@ -41,13 +41,18 @@ public class Documento {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EstadoFirma estadoFirma;
+    @Builder.Default
+    private EstadoFirma estadoFirma = EstadoFirma.PENDIENTE;
 
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime fechaSubida;
 
     private LocalDateTime fechaFirma;
+    
+    private Integer anio;
+    private Integer mes;
+    private String etiquetas;
 
     // RELACIONES
     @ManyToOne(fetch = FetchType.LAZY)

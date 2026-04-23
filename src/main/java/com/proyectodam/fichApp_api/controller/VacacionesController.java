@@ -16,6 +16,11 @@ public class VacacionesController {
         this.vacacionesService = vacacionesService;
     }
 
+    @GetMapping("/todas")
+    public ResponseEntity<List<SolicitudAusencia>> obtenerTodas() {
+        return ResponseEntity.ok(vacacionesService.obtenerTodasLasSolicitudes());
+    }
+
     @GetMapping("/empleado/{idEmpleado}")
     public ResponseEntity<List<SolicitudAusencia>> obtenerPorEmpleado(
             @PathVariable Integer idEmpleado) {
@@ -39,5 +44,14 @@ public class VacacionesController {
 
         return ResponseEntity.ok(
                 vacacionesService.rechazarSolicitud(id, comentario));
+    }
+
+    @PostMapping("/solicitar")
+    public ResponseEntity<SolicitudAusencia> crearSolicitud(
+            @RequestParam Integer idEmpleado,
+            @RequestBody SolicitudAusencia peticion) {
+
+        return ResponseEntity.ok(
+                vacacionesService.crearSolicitud(idEmpleado, peticion));
     }
 }

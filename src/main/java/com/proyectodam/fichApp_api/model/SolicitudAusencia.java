@@ -5,9 +5,11 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "solicitudes_ausencia")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SolicitudAusencia {
 
     @Id
@@ -34,7 +36,6 @@ public class SolicitudAusencia {
     @Column(name = "dias_habiles")
     private Integer diasHabiles;
 
-    // En BD es varchar(50). Para vacaciones usa "VACACIONES"
     @Column(name = "tipo", length = 50)
     private String tipo;
 
@@ -52,7 +53,7 @@ public class SolicitudAusencia {
     @Column(name = "comentario_gestor", columnDefinition = "text")
     private String comentarioGestor;
 
-    // ===== GETTERS/SETTERS =====
+    //  GETTERS/SETTERS 
 
     public Integer getIdSolicitud() {
         return idSolicitud;

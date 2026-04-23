@@ -30,9 +30,12 @@ public class DocumentoController {
             @RequestParam("archivo") MultipartFile archivo,
             @RequestParam(value = "nombreCustom", required = false) String nombreCustom,
             @RequestParam("categoria") String categoria,
-            @RequestParam("idEmpleado") Integer idEmpleado) {
+            @RequestParam("idEmpleado") Integer idEmpleado,
+            @RequestParam(value = "anio", required = false) Integer anio,
+            @RequestParam(value = "mes", required = false) Integer mes,
+            @RequestParam(value = "etiquetas", required = false) String etiquetas) {
 
-        DocumentoDTO nuevoDocumento = documentoService.subirDocumento(archivo, nombreCustom, categoria, idEmpleado);
+        DocumentoDTO nuevoDocumento = documentoService.subirDocumento(archivo, nombreCustom, categoria, idEmpleado, anio, mes, etiquetas);
         return ResponseEntity.ok(nuevoDocumento);
     }
 
@@ -59,6 +62,28 @@ public class DocumentoController {
     @GetMapping("/empleado/{idEmpleado}")
     public ResponseEntity<List<DocumentoDTO>> listarPorEmpleado(@PathVariable Integer idEmpleado) {
         return ResponseEntity.ok(documentoService.listarPorEmpleado(idEmpleado));
+    }
+
+    /**
+     * Obtiene los años ("tiempos") únicos disponibles.
+     */
+    @GetMapping("/tiempo")
+    public ResponseEntity<List<String>> obtenerTiemposDisponibles(@RequestParam(defaultValue = "NOMINA") String categoria) {
+        return ResponseEntity.ok(documentoService.getTiemposDisponibles(categoria));
+    }
+
+    /**
+     * Obtiene los documentos de forma paginada para ser consumidos desde el cliente.
+     */
+    @GetMapping("/paginas")
+    public ResponseEntity<org.springframework.data.domain.Page<DocumentoDTO>> obtenerPaginados(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size,
+            @RequestParam(defaultValue = "NOMINA") String categoria,
+            @RequestParam(required = false) Integer idEmpleado,
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(required = false) String year) {
+        return ResponseEntity.ok(documentoService.obtenerPaginados(page, size, categoria, idEmpleado, searchQuery, year));
     }
 
     /**

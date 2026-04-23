@@ -11,7 +11,7 @@ public interface IDocumentoService {
     /**
      * Sube un nuevo documento y genera su Hash SHA-256.
      */
-    DocumentoDTO subirDocumento(MultipartFile archivo, String nombreCustom, String categoria, Integer idEmpleado);
+    DocumentoDTO subirDocumento(MultipartFile archivo, String nombreCustom, String categoria, Integer idEmpleado, Integer anio, Integer mes, String etiquetas);
 
     /**
      * Devuelve la lista de todos los documentos en el sistema.
@@ -43,4 +43,14 @@ public interface IDocumentoService {
      * Elimina un documento del sistema.
      */
     void eliminarDocumento(Long id);
+
+    /**
+     * Obtiene los años ("tiempos") disponibles para una categoría.
+     */
+    List<String> getTiemposDisponibles(String categoria);
+
+    /**
+     * Obtiene una página filtrada de documentos.
+     */
+    org.springframework.data.domain.Page<DocumentoDTO> obtenerPaginados(int page, int size, String categoria, Integer idEmpleado, String searchQuery, String year);
 }

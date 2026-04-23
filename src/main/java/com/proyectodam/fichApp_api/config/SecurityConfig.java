@@ -2,8 +2,8 @@ package com.proyectodam.fichApp_api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     /**
@@ -22,17 +21,17 @@ public class SecurityConfig {
         http
                 // 1. Deshabilitar CSRF (API Stateless)
                 .csrf(AbstractHttpConfigurer::disable)
+                
+                // 2. Habilitar CORS (usando la configuración de CorsConfig)
+                .cors(Customizer.withDefaults())
 
-                // 2. Sesiones sin estado
+                // 3. Sesiones sin estado
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // 3. Autorización de peticiones
+                // 4. Autorización de peticiones
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas (Auth, Swagger)
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-
-                        //  ACCESO TEMPORAL PARA DESARROLLO
+                        //  ACCESO TEMPORAL PARA DESARROLLO (Todo abierto)
+                        // NOTA: Se eliminan matchers específicos de Swagger/Auth por ser redundantes con permitAll()
                         .anyRequest().permitAll());
 
         return http.build();

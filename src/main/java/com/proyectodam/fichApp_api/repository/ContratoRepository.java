@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ContratoRepository extends JpaRepository<Contrato, Integer> {
@@ -25,4 +27,9 @@ public interface ContratoRepository extends JpaRepository<Contrato, Integer> {
     List<Contrato> findContratosConEmpleadoActivo();
 
     Contrato findTopByEmpleadoOrderByFechaInicioDesc(Empleado empleado);
+
+    @Query("SELECT c FROM Contrato c WHERE c.empleado.idEmpleado = :idEmpleado " +
+           "AND c.fechaInicio <= :fecha AND (c.fechaFin IS NULL OR c.fechaFin >= :fecha) " +
+           "ORDER BY c.fechaInicio DESC")
+    Optional<Contrato> buscarContratoActivo(@Param("idEmpleado") int idEmpleado, @Param("fecha") LocalDate fecha);
 }

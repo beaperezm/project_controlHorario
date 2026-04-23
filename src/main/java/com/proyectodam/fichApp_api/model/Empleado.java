@@ -9,21 +9,15 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "empleados")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Empleado {
-
-  /*
-   * @Id
-   * 
-   * @GeneratedValue(strategy = GenerationType.UUID)
-   * 
-   * @Column(name = "id_empleado", updatable = false, nullable = false)
-   * private UUID idEmpleado2;
-   */
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,4 +71,10 @@ public class Empleado {
 
   @Column(length = 20)
   private String nuss;
+
+  @Column(name = "auth_user_id", unique = true)
+  private String authUserId;
+
+  @Column(name = "activo_en_auth", nullable = false)
+  private boolean activoEnAuth = false;
 }

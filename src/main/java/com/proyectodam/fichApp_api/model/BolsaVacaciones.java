@@ -29,7 +29,7 @@ public class BolsaVacaciones {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
-    // ===== GETTERS/SETTERS =====
+    // GETTERS/SETTERS
 
     public Integer getIdBolsaVac() {
         return idBolsaVac;

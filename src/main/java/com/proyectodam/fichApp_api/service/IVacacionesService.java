@@ -6,10 +6,14 @@ import java.util.List;
 
 public interface IVacacionesService {
 
+    List<SolicitudAusencia> obtenerTodasLasSolicitudes();
+
     List<SolicitudAusencia> obtenerSolicitudesPorEmpleado(Integer idEmpleado);
 
     SolicitudAusencia aprobarSolicitud(Integer idSolicitud);
 
     SolicitudAusencia rechazarSolicitud(Integer idSolicitud, String comentario);
+
+    SolicitudAusencia crearSolicitud(Integer idEmpleado, SolicitudAusencia peticion);
 
 }

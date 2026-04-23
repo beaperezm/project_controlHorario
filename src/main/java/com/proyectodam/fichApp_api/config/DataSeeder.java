@@ -1,19 +1,16 @@
-// TODO: Eliminar esta clase una vez que la base de datos real esté operativa.
-
 package com.proyectodam.fichApp_api.config;
 
 import com.proyectodam.fichApp_api.enums.EstadoEmpleado;
-import com.proyectodam.fichApp_api.enums.MetodoFichaje;
-import com.proyectodam.fichApp_api.enums.TipoEventoFichaje;
 import com.proyectodam.fichApp_api.enums.TipoGenero;
 import com.proyectodam.fichApp_api.model.Empleado;
 import com.proyectodam.fichApp_api.model.Departamento;
 import com.proyectodam.fichApp_api.model.Empresa;
-import com.proyectodam.fichApp_api.model.Fichaje;
 import com.proyectodam.fichApp_api.model.Rol;
 import com.proyectodam.fichApp_api.repository.EmpleadoRepository;
 import com.proyectodam.fichApp_api.repository.EmpresaRepository;
-import com.proyectodam.fichApp_api.repository.FichajeRepository;
+import com.proyectodam.fichApp_api.repository.ContratoRepository;
+import com.proyectodam.fichApp_api.model.Contrato;
+import com.proyectodam.fichApp_api.model.Horario;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,11 +27,10 @@ public class DataSeeder implements CommandLineRunner {
 
     private final EmpresaRepository empresaRepository;
     private final EmpleadoRepository empleadoRepository;
-    private final FichajeRepository fichajeRepository;
-    private final com.proyectodam.fichApp_api.repository.DocumentoRepository documentoRepository;
     private final com.proyectodam.fichApp_api.repository.RolRepository rolRepository;
     private final com.proyectodam.fichApp_api.repository.DepartamentoRepository departamentoRepository;
     private final com.proyectodam.fichApp_api.repository.HorarioRepository horarioRepository;
+    private final ContratoRepository contratoRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -61,111 +57,69 @@ public class DataSeeder implements CommandLineRunner {
         crearDepartamentosPorDefecto(empresa);
 
         // 3. Crear usuarios y datos de prueba
-        crearEmpleadoSiNoExiste(empresa, "admin@fichapp.com", "Admin", "User", "admin123", true);
-        Empleado usuario = crearEmpleadoSiNoExiste(empresa, "user@fichapp.com", "Usuario", "Prueba", "user123", false);
+        Rol adminRol = rolRepository.findByNombre("ADMIN").orElseThrow();
+        Rol userRol = rolRepository.findByNombre("USER").orElseThrow();
+        Departamento deptoDev = departamentoRepository.findAll().stream()
+                .filter(d -> d.getNombre().equalsIgnoreCase("Desarrollo"))
+                .findFirst().orElseThrow();
+        Horario horarioGral = horarioRepository.findAll().stream().findFirst().orElseThrow();
 
-        if (usuario != null) {
-            if (fichajeRepository.count() == 0) {
-                crearFichajesPrueba(usuario);
+        crearEmpleadoSiNoExiste(empresa, "admin@fichapp.com", "Admin", "User", "admin123", true,
+                adminRol, deptoDev, horarioGral);
+        crearEmpleadoSiNoExiste(empresa, "user@fichapp.com", "Usuario", "Prueba", "user123", false,
+                userRol, deptoDev, horarioGral);
+
+        
+        // 4. Asegurar que todos los empleados tengan el PIN por defecto "0000"
+        empleadoRepository.findAll().forEach(e -> {
+            if (e.getPinQuioscoHash() == null || e.getPinQuioscoHash().isEmpty()) {
+                e.setPinQuioscoHash(passwordEncoder.encode("0000"));
+                empleadoRepository.save(e);
             }
-            if (documentoRepository.count() == 0) {
-                crearDocumentosPrueba(usuario);
-            }
-        }
+        });
     }
 
     private Empleado crearEmpleadoSiNoExiste(Empresa empresa, String email, String nombre, String apellidos,
-            String password, boolean isAdmin) {
+            String password, boolean isAdmin, Rol rol, Departamento depto, Horario horario) {
         Optional<Empleado> empleadoOpt = empleadoRepository.findByEmail(email);
+        Empleado empleado;
         if (empleadoOpt.isPresent()) {
-            return empleadoOpt.get();
+            empleado = empleadoOpt.get();
+        } else {
+            empleado = new Empleado();
+            empleado.setEmpresa(empresa);
+            empleado.setNombre(nombre);
+            empleado.setApellidos(apellidos);
+            empleado.setEmail(email);
+            empleado.setPasswordHash(passwordEncoder.encode(password));
+            empleado.setPinQuioscoHash(passwordEncoder.encode("0000"));
+            empleado.setDniNie(isAdmin ? "00000000A" : "11111111B");
+            empleado.setTelefono(isAdmin ? "600000000" : "600111222");
+            empleado.setFechaNacimiento(LocalDate.of(1990, 1, 1));
+            empleado.setGenero(TipoGenero.M);
+            empleado.setEstado(EstadoEmpleado.ACTIVO);
+            empleado.setFechaAltaSistema(LocalDate.now());
+            empleado.setDireccion("Calle de prueba 123");
+            empleado = empleadoRepository.save(empleado);
         }
 
-        Empleado empleado = new Empleado();
-        empleado.setEmpresa(empresa);
-        empleado.setNombre(nombre);
-        empleado.setApellidos(apellidos);
-        empleado.setEmail(email);
-        empleado.setPasswordHash(passwordEncoder.encode(password));
-        empleado.setDniNie(isAdmin ? "00000000A" : "11111111B");
-        empleado.setTelefono(isAdmin ? "600000000" : "600111222");
-        empleado.setFechaNacimiento(LocalDate.of(1990, 1, 1));
-        empleado.setGenero(TipoGenero.M);
-        empleado.setEstado(EstadoEmpleado.ACTIVO);
-        empleado.setFechaAltaSistema(LocalDate.now());
-
-        // TODO: Asignar el rol real
-        return empleadoRepository.save(empleado);
-    }
-
-    private void crearFichajesPrueba(Empleado empleado) {
-        // Fichajes de ayer (09:00 a 18:00)
-        LocalDateTime ayer = LocalDateTime.now().minusDays(1).withHour(9).withMinute(0).withSecond(0);
-
-        Fichaje entrada = new Fichaje();
-        entrada.setEmpleado(empleado);
-        entrada.setTimestampDispositivo(ayer);
-        entrada.setTimestampServidor(ayer);
-        entrada.setTipoEvento(TipoEventoFichaje.ENTRADA);
-        entrada.setMetodoRegistro(MetodoFichaje.MANUAL);
-        entrada.setEsValido(true);
-        fichajeRepository.save(entrada);
-
-        Fichaje salida = new Fichaje();
-        salida.setEmpleado(empleado);
-        salida.setTimestampDispositivo(ayer.plusHours(9));
-        salida.setTimestampServidor(ayer.plusHours(9));
-        salida.setTipoEvento(TipoEventoFichaje.SALIDA);
-        salida.setMetodoRegistro(MetodoFichaje.MANUAL);
-        salida.setEsValido(true);
-        fichajeRepository.save(salida);
-
-        // Fichaje de hoy (08:55)
-        LocalDateTime hoy = LocalDateTime.now().withHour(8).withMinute(55).withSecond(0);
-        Fichaje entradaHoy = new Fichaje();
-        entradaHoy.setEmpleado(empleado);
-        entradaHoy.setTimestampDispositivo(hoy);
-        entradaHoy.setTimestampServidor(hoy);
-        entradaHoy.setTipoEvento(TipoEventoFichaje.ENTRADA);
-        entradaHoy.setMetodoRegistro(MetodoFichaje.MANUAL);
-        entradaHoy.setEsValido(true);
-        fichajeRepository.save(entradaHoy);
-    }
-
-    private void crearDocumentosPrueba(Empleado empleado) {
-        try {
-            String fileName = "nomina_prueba_" + System.currentTimeMillis() + ".txt";
-            String contenido = "Este es un documento de prueba generado automáticamente para " + empleado.getNombre();
-
-            // Asegurar directorio uploads
-            java.nio.file.Path uploadDir = java.nio.file.Paths.get("uploads").toAbsolutePath().normalize();
-            if (!java.nio.file.Files.exists(uploadDir)) {
-                java.nio.file.Files.createDirectories(uploadDir);
-            }
-
-            // Escribir archivo físico
-            java.nio.file.Path targetLocation = uploadDir.resolve(fileName);
-            java.nio.file.Files.write(targetLocation, contenido.getBytes());
-
-            // Calcular Hash
-            String hash = calcularHash(contenido.getBytes());
-
-            // Crear entidad
-            com.proyectodam.fichApp_api.model.Documento doc = com.proyectodam.fichApp_api.model.Documento.builder()
-                    .nombreArchivo(fileName)
-                    .rutaAcceso(targetLocation.toString())
-                    .tipoMime("text/plain")
-                    .tamanoBytes(contenido.length())
-                    .categoria("NÓMINA")
-                    .estadoFirma(com.proyectodam.fichApp_api.enums.EstadoFirma.PENDIENTE)
-                    .hashDocumento(hash)
-                    .empleado(empleado)
-                    .build();
-
-            documentoRepository.save(doc);
-        } catch (Exception e) {
+        final Empleado finalEmpleado = empleado;
+        // Crear contrato si no tiene ninguno activo
+        if (contratoRepository.findAll().stream().noneMatch(c -> c.getEmpleado().getIdEmpleado() == finalEmpleado.getIdEmpleado())) {
+            Contrato contrato = new Contrato();
+            contrato.setEmpleado(finalEmpleado);
+            contrato.setRol(rol);
+            contrato.setDepartamento(depto);
+            contrato.setHorario(horario);
+            contrato.setFechaInicio(LocalDate.now());
+            contrato.setTipoContrato("INDEFINIDO");
+            contrato.setCreatedAt(LocalDateTime.now());
+            contratoRepository.save(contrato);
         }
+
+        return empleado;
     }
+
 
     private void crearRolesPorDefecto() {
         String[] roles = { "ADMIN", "USER", "MANAGER", "RRHH" };
@@ -198,7 +152,6 @@ public class DataSeeder implements CommandLineRunner {
                     depto.setNombre(deptoNombre);
                     depto.setDescripcion("Departamento de " + deptoNombre);
                     depto.setEmpresa(empresa);
-                    depto.setEmpresa(empresa);
                     departamentoRepository.save(depto);
                 }
             } catch (Exception e) {
@@ -219,19 +172,5 @@ public class DataSeeder implements CommandLineRunner {
             horarioRepository.save(horario);
         } catch (Exception e) {
         }
-    }
-
-    private String calcularHash(byte[] content) throws java.security.NoSuchAlgorithmException {
-        java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
-        byte[] encodedhash = digest.digest(content);
-        StringBuilder hexString = new StringBuilder(2 * encodedhash.length);
-        for (byte b : encodedhash) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
     }
 }

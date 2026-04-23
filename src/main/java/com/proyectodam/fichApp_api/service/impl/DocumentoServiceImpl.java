@@ -9,6 +9,7 @@ import com.proyectodam.fichApp_api.repository.EmpleadoRepository;
 import com.proyectodam.fichApp_api.repository.ContratoRepository;
 import com.proyectodam.fichApp_api.model.Contrato;
 import com.proyectodam.fichApp_api.service.IDocumentoService;
+import com.proyectodam.fichApp_api.service.storage.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,14 +17,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,11 +30,11 @@ public class DocumentoServiceImpl implements IDocumentoService {
     private final DocumentoRepository documentoRepository;
     private final EmpleadoRepository empleadoRepository;
     private final ContratoRepository contratoRepository;
-    private final Path fileStorageLocation = Paths.get("uploads").toAbsolutePath().normalize();
+    private final StorageService storageService;
 
     @Override
     public DocumentoDTO subirDocumento(MultipartFile archivo, String nombreCustom, String categoria,
-            Integer idEmpleado) {
+            Integer idEmpleado, Integer anio, Integer mes, String etiquetas) {
         Empleado empleado = empleadoRepository.findById(idEmpleado)
                 .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
 
@@ -63,27 +59,27 @@ public class DocumentoServiceImpl implements IDocumentoService {
                 throw new RuntimeException("El documento ya existe en el sistema (Hash duplicado).");
             }
 
-            if (!Files.exists(fileStorageLocation)) {
-                Files.createDirectories(fileStorageLocation);
-            }
-
-            Path targetLocation = fileStorageLocation.resolve(finalName);
-            Files.copy(archivo.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            // Delegar el almacenamiento al StorageService (local o Supabase)
+            // Usa el ID del empleado como subdirectorio para organizar
+            String storagePath = storageService.store(archivo, String.valueOf(idEmpleado));
 
             Documento documento = Documento.builder()
                     .nombreArchivo(finalName)
-                    .rutaAcceso(targetLocation.toString())
+                    .rutaAcceso(storagePath)
                     .tipoMime(archivo.getContentType())
                     .tamanoBytes(archivo.getSize())
                     .categoria(categoria)
                     .estadoFirma(EstadoFirma.PENDIENTE)
                     .hashDocumento(hash)
                     .empleado(empleado)
+                    .anio(anio)
+                    .mes(mes)
+                    .etiquetas(etiquetas)
                     .build();
 
             Documento guardado = documentoRepository.save(documento);
             return mapToDTO(guardado);
-        } catch (IOException | NoSuchAlgorithmException ex) {
+        } catch (java.io.IOException | NoSuchAlgorithmException ex) {
             throw new RuntimeException("Error al almacenar el archivo " + finalName, ex);
         }
     }
@@ -113,12 +109,8 @@ public class DocumentoServiceImpl implements IDocumentoService {
     public byte[] descargarContenido(Long id) {
         Documento documento = documentoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Documento no encontrado"));
-        try {
-            Path filePath = Paths.get(documento.getRutaAcceso());
-            return Files.readAllBytes(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException("No se pudo leer el archivo", e);
-        }
+        // Delegar la descarga al StorageService (local o Supabase)
+        return storageService.loadBytes(documento.getRutaAcceso());
     }
 
     @Override
@@ -140,14 +132,36 @@ public class DocumentoServiceImpl implements IDocumentoService {
         Documento documento = documentoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Documento no encontrado"));
 
-        try {
-            Path filePath = Paths.get(documento.getRutaAcceso());
-            Files.deleteIfExists(filePath);
-        } catch (IOException e) {
-            System.err.println("Advertencia: No se pudo borrar el archivo físico " + documento.getRutaAcceso());
-        }
+        // Delegar la eliminación al StorageService (local o Supabase)
+        storageService.delete(documento.getRutaAcceso());
 
         documentoRepository.delete(documento);
+    }
+
+    @Override
+    public List<String> getTiemposDisponibles(String categoria) {
+        return documentoRepository.findDistinctUploadYears(categoria).stream()
+                .filter(java.util.Objects::nonNull)
+                .map(String::valueOf)
+                .sorted(java.util.Comparator.reverseOrder())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public org.springframework.data.domain.Page<DocumentoDTO> obtenerPaginados(int page, int size, String categoria, Integer idEmpleado, String searchQuery, String year) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "fechaSubida"));
+        
+        Integer yearInt = null;
+        if (year != null && !year.trim().isEmpty() && !year.equalsIgnoreCase("Todos")) {
+            try {
+                yearInt = Integer.parseInt(year);
+            } catch(NumberFormatException ignored) {}
+        }
+        
+        String cleanSearch = (searchQuery != null && !searchQuery.trim().isEmpty()) ? searchQuery.trim() : null;
+        
+        return documentoRepository.findPaginatedWithFilters(categoria, idEmpleado, cleanSearch, yearInt, pageable)
+                .map(this::mapToDTO);
     }
 
     private String calcularHash(byte[] content) throws NoSuchAlgorithmException {
@@ -187,6 +201,10 @@ public class DocumentoServiceImpl implements IDocumentoService {
                         ? documento.getEmpleado().getNombre() + " " + documento.getEmpleado().getApellidos()
                         : "Desconocido")
                 .departamento(departamento)
+                .estadoFirma(documento.getEstadoFirma())
+                .anio(documento.getAnio())
+                .mes(documento.getMes())
+                .etiquetas(documento.getEtiquetas())
                 .build();
     }
 }

@@ -30,4 +30,6 @@ public interface IEmpleadoService {
     EmpleadoEstadoContadorDTO countEstadoEmpleados();
 
     long countEmpleadosByEstado(EstadoEmpleado estadoEmpleado);
+
+    void cambiarPassword(int idEmpleado, String nuevaPassword);
 }

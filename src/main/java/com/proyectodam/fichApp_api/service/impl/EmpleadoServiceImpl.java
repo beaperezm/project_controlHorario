@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.proyectodam.fichApp_api.dto.EmpleadoDTO;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class EmpleadoServiceImpl implements IEmpleadoService {
@@ -44,18 +45,35 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
 
         @Autowired
         private HorarioRepository horarioRepository;
+        
+        @Autowired
+        private PasswordEncoder passwordEncoder;
 
         @Override
         public Empleado altaRapidaEmpleado(AltaRapidaEmpleadoDTO altaRapidaEmpleadoDTO) {
 
+                // Validaciones de unicidad antes de crear
+                if (altaRapidaEmpleadoDTO.getEmail() != null && !altaRapidaEmpleadoDTO.getEmail().isEmpty()) {
+                        empleadoRepository.findByEmail(altaRapidaEmpleadoDTO.getEmail()).ifPresent(e -> {
+                                throw new com.proyectodam.fichApp_api.exception.DuplicateFieldException(
+                                        "email", altaRapidaEmpleadoDTO.getEmail());
+                        });
+                }
+                if (altaRapidaEmpleadoDTO.getDni() != null && !altaRapidaEmpleadoDTO.getDni().isEmpty()) {
+                        empleadoRepository.findByDniNie(altaRapidaEmpleadoDTO.getDni()).ifPresent(e -> {
+                                throw new com.proyectodam.fichApp_api.exception.DuplicateFieldException(
+                                        "DNI/NIE", altaRapidaEmpleadoDTO.getDni());
+                        });
+                }
+
                 Empresa empresa = empresaRepository.findById(altaRapidaEmpleadoDTO.getIdEmpresa())
-                                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+                                .orElseThrow(() -> new RuntimeException("Error: La empresa con ID " + altaRapidaEmpleadoDTO.getIdEmpresa() + " no existe en la base de datos actual."));
 
                 Departamento departamento = departamentoRepository.findById(altaRapidaEmpleadoDTO.getIdDepartamento())
-                                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+                                .orElseThrow(() -> new RuntimeException("Error: El departamento con ID " + altaRapidaEmpleadoDTO.getIdDepartamento() + " no existe."));
 
                 Rol rol = rolRepository.findById(altaRapidaEmpleadoDTO.getIdRol())
-                                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                                .orElseThrow(() -> new RuntimeException("Error: El rol con ID " + altaRapidaEmpleadoDTO.getIdRol() + " no existe."));
 
                 // Se crea el empleado
                 Empleado empleado = new Empleado();
@@ -69,7 +87,20 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
                 empleado.setFechaAltaSistema(altaRapidaEmpleadoDTO.getFechaAlta());
                 empleado.setFechaNacimiento(altaRapidaEmpleadoDTO.getFechaNacimiento());
                 empleado.setEmpresa(empresa);
-                empleadoRepository.save(empleado);
+
+                // La contraseña por defecto es el DNI
+                if (altaRapidaEmpleadoDTO.getDni() != null && !altaRapidaEmpleadoDTO.getDni().isEmpty()) {
+                        empleado.setPasswordHash(passwordEncoder.encode(altaRapidaEmpleadoDTO.getDni()));
+                }
+                
+                // IMPORTANTE: Asignar PIN por defecto para evitar error 500 (NOT NULL constraint)
+                empleado.setPinQuioscoHash(passwordEncoder.encode("0000"));
+
+                try {
+                    empleadoRepository.save(empleado);
+                } catch (Exception e) {
+                    throw new RuntimeException("Error al guardar el empleado: " + e.getMessage());
+                }
 
                 // Se crea el contrato
                 Contrato contrato = new Contrato();
@@ -77,10 +108,10 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
                 contrato.setDepartamento(departamento);
                 contrato.setRol(rol);
                 contrato.setFechaInicio(altaRapidaEmpleadoDTO.getFechaAlta());
+                contrato.setTipoContrato("INDEFINIDO");
                 contrato.setCreatedAt(LocalDateTime.now());
 
-                // Asignar Horario por defecto (el primero que encuentre de la empresa o
-                // general)
+                // Asignar Horario por defecto
                 Horario horarioDefecto = horarioRepository.findAll().stream()
                                 .filter(h -> h.getEmpresa().getIdEmpresa() == empresa.getIdEmpresa())
                                 .findFirst()
@@ -88,12 +119,13 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
 
                 if (horarioDefecto != null) {
                         contrato.setHorario(horarioDefecto);
-                } else {
-                        System.out.println("ADVERTENCIA: No se encontró horario por defecto para la empresa "
-                                        + empresa.getNombre());
                 }
 
-                contratoRepository.save(contrato);
+                try {
+                    contratoRepository.save(contrato);
+                } catch (Exception e) {
+                    throw new RuntimeException("Error al crear el contrato del empleado: " + e.getMessage());
+                }
 
                 return empleado;
         }
@@ -103,6 +135,25 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
 
                 Empleado empleado = empleadoRepository.findById(id)
                                 .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+                // Validar unicidad de email (excluyendo al empleado que se está editando)
+                if (altaRapidaEmpleadoDTO.getEmail() != null && !altaRapidaEmpleadoDTO.getEmail().isEmpty()) {
+                        empleadoRepository.findByEmail(altaRapidaEmpleadoDTO.getEmail()).ifPresent(existente -> {
+                                if (existente.getIdEmpleado() != id) {
+                                        throw new com.proyectodam.fichApp_api.exception.DuplicateFieldException(
+                                                "email", altaRapidaEmpleadoDTO.getEmail());
+                                }
+                        });
+                }
+                // Validar unicidad de DNI/NIE (excluyendo al empleado que se está editando)
+                if (altaRapidaEmpleadoDTO.getDni() != null && !altaRapidaEmpleadoDTO.getDni().isEmpty()) {
+                        empleadoRepository.findByDniNie(altaRapidaEmpleadoDTO.getDni()).ifPresent(existente -> {
+                                if (existente.getIdEmpleado() != id) {
+                                        throw new com.proyectodam.fichApp_api.exception.DuplicateFieldException(
+                                                "DNI/NIE", altaRapidaEmpleadoDTO.getDni());
+                                }
+                        });
+                }
 
                 if (altaRapidaEmpleadoDTO.getNombre() != null) {
                         empleado.setNombre(altaRapidaEmpleadoDTO.getNombre());
@@ -177,6 +228,7 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
                                         dto.setEmail(e.getEmail());
                                         dto.setTelefono(e.getTelefono());
                                         dto.setEstado(e.getEstado().name());
+                                        dto.setPinQuioscoHash(e.getPinQuioscoHash());
                                         return dto;
                                 }).collect(Collectors.toList());
         }
@@ -241,6 +293,15 @@ public class EmpleadoServiceImpl implements IEmpleadoService {
         @Override
         public long countEmpleadosByEstado(EstadoEmpleado estadoEmpleado) {
                 return empleadoRepository.countByEstado(estadoEmpleado);
+        }
+
+        @Override
+        public void cambiarPassword(int idEmpleado, String nuevaPassword) {
+                Empleado empleado = empleadoRepository.findById(idEmpleado)
+                                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+                empleado.setPasswordHash(passwordEncoder.encode(nuevaPassword));
+                empleado.setUpdatedAt(LocalDateTime.now());
+                empleadoRepository.save(empleado);
         }
 
 }

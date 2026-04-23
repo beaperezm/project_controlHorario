@@ -20,6 +20,7 @@ public class EmpleadoDTO {
     private String direccion;
     private String telefono;
     private String dni;
+    private String pinQuioscoHash;
 
     // De main
     private String departamento;

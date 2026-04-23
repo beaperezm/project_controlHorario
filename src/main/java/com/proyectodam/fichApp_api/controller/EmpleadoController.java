@@ -113,4 +113,10 @@ public class EmpleadoController {
         EmpleadoEstadoContadorDTO empleadoEstadoContadorDTO = iEmpleadoService.countEstadoEmpleados();
         return ResponseEntity.ok(empleadoEstadoContadorDTO);
     }
+
+    @PostMapping("/{id}/cambiar-password")
+    public ResponseEntity<?> cambiarPassword(@PathVariable int id, @RequestBody com.proyectodam.fichApp_api.dto.PasswordChangeDTO request) {
+        iEmpleadoService.cambiarPassword(id, request.getNewPassword());
+        return ResponseEntity.ok().build();
+    }
 }

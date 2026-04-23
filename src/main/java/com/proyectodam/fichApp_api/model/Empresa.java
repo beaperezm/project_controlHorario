@@ -4,12 +4,15 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Entidad que representa la empresa cliente que utiliza el sistema.
  */
 @Entity
 @Table(name = "empresas")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Empresa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

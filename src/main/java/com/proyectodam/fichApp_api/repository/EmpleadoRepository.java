@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
     Optional<Empleado> findByEmail(String email);
 
+    Optional<Empleado> findByAuthUserId(String authUserId);
+
     Optional<Empleado> findByDniNie(String dniNie);
 
     List<Empleado> findByEstadoNot(EstadoEmpleado estadoEmpleados);

@@ -18,28 +18,25 @@ public class ConfiguracionConexionController {
     @Autowired
     private IConfiguracionConexionService configuracionService;
 
-    /**
-     * Devuelve la configuración actual de la conexión.
-     */
     @GetMapping("/conexion")
     public ResponseEntity<ConfiguracionConexion> obtenerConfiguracion() {
         return ResponseEntity.ok(configuracionService.obtenerConfiguracion());
     }
 
-    /**
-     * Actualiza el modo de conexión y la URL personalizada si es necesario.
-     * Devuelve la nueva configuración y si requiere reinicio.
-     */
     @PutMapping("/conexion")
-    public ResponseEntity<Map<String, Object>> actualizarConfiguracion(
-            @RequestBody Map<String, String> request) {
-
+    public ResponseEntity<Map<String, Object>> actualizarConfiguracion(@RequestBody Map<String, String> request) {
         String modoStr = request.get("modo");
         String urlPersonalizada = request.get("urlPersonalizada");
+        String supaUrl = request.get("supaUrl");
+        String supaKey = request.get("supaKey");
+        String supaDbPass = request.get("supaDbPass");
+        String supaDbUser = request.get("supaDbUser");
+        String supaDbName = request.get("supaDbName");
+        String supaDbHost = request.get("supaDbHost");
 
         try {
             ModoConexion nuevoModo = ModoConexion.valueOf(modoStr.toUpperCase());
-            ConfiguracionConexion configuracion = configuracionService.actualizarModo(nuevoModo, urlPersonalizada);
+            ConfiguracionConexion configuracion = configuracionService.actualizarModo(nuevoModo, urlPersonalizada, supaUrl, supaKey, supaDbPass, supaDbUser, supaDbName, supaDbHost);
 
             Map<String, Object> response = new HashMap<>();
             response.put("configuracion", configuracion);
@@ -57,9 +54,16 @@ public class ConfiguracionConexionController {
         }
     }
 
-    /**
-     * Consulta el modo de conexión activo y la URL base que se está utilizando.
-     */
+    @PostMapping("/inicializar-db")
+    public ResponseEntity<Map<String, Object>> inicializarBaseDatos() {
+        Map<String, Object> resultado = configuracionService.inicializarBaseDatosSupabase();
+        if ((Boolean) resultado.get("success")) {
+            return ResponseEntity.ok(resultado);
+        } else {
+            return ResponseEntity.internalServerError().body(resultado);
+        }
+    }
+
     @GetMapping("/modo-actual")
     public ResponseEntity<Map<String, String>> obtenerModoActual() {
         ModoConexion modo = configuracionService.obtenerModoActual();
